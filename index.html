@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUMMIT</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+</head>
+<body>
+        <!-- 에러 모달 -->
+        <div id="modal-error-bg" class="modal-bg" style="display:none;">
+            <div class="modal-box">
+                <span class="modal-icon">&#9888;</span>
+                <div class="modal-message" id="modal-error-message"></div>
+                <button class="modal-close" id="modal-error-close">확인</button>
+            </div>
+        </div>
+        <!-- 로딩창 -->
+    <div class="logo-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400">
+            <g fill="#D61F26" transform="skewX(-18) translate(210, 40)">
+                            <rect class="bar bar-1" x="0" y="150" width="48" height="130" />
+                            <rect class="bar bar-2" x="60" y="120" width="48" height="100" />
+                            <rect class="bar bar-3" x="120" y="180" width="48" height="60" />
+                            <rect class="bar bar-4" x="180" y="60" width="48" height="150" />
+            </g>
+        </svg>
+        <div class="loading-text">0%</div>
+    </div>
+
+    <!-- 메인 컨텐츠 -->
+    <img id="summit-main-logo" alt="Summit Logo" class="content top-left-logo" style="display: none;">
+    
+    <nav class="content top-right-nav" style="display: none;">
+        <a href="#" class="nav-link active" data-section="home">홈</a>
+        <a href="#" class="nav-link" data-section="project">프로젝트</a>
+        <a href="#" class="nav-link" data-section="member">멤버</a>
+        <a href="#" class="nav-link" data-section="qna">QnA</a>
+    </nav>
+    
+    <!-- 홈 섹션 -->
+    <div class="content center-content section home" id="home-section" style="display: none;">
+        <div class="hero-block">
+            <img id="summit-serve-logo" alt="Summit Serve" class="center-logo">
+            <p class="subtitle">Be summit.</p>
+        </div>
+        <div class="button-container" id="recruitButtons" style="display: none;">
+            <a href="#apply" class="recruit-btn primary-btn">2기 모집 신청하기</a>
+            <a href="#result" class="recruit-btn secondary-btn">2기 합격자 확인하기</a>
+        </div>
+        <!-- 아래로 스크롤 유도 화살표 -->
+        <div class="scroll-down-arrow" id="scrollDownArrow" style="display: none;">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 16L20 26L30 16" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- 동아리 소개 섹션 -->
+    <div class="section-gap"></div>
+    <div class="content section intro" id="intro-section" style="display: none;">
+        <div class="intro-box">
+            <h2 class="intro-text">저희는 디미고 유일 올라운더, <br>핀테크 동아리 <span class="accent">SUMMIT</span> 입니다!</h2>
+        </div>
+    </div>
+    
+    <!-- 동아리 핵심 가치 섹션 -->
+    <div class="section-gap"></div>
+    <div class="content section values" id="values-section" style="display: none;">
+        <div class="values-box">
+            <p class="values-label">핵심가치</p>
+            <h2 class="values-heading"><span class="accent">SUMMIT</span>은 이러한<br>가치를 추구해요</h2>
+        </div>
+        <div class="values-grid">
+            <div class="value">도전</div>
+            <div class="value">열정</div>
+            <div class="value">협동심</div>
+        </div>
+    </div>
+
+    <!-- 동아리 가치 소개 섹션 -->
+    <div class="section-gap"></div>
+    <div class="content section inform" id="inform-section" style="display: none;">
+        <div class="inform-box">
+            <div class="inform-content">
+                <div class="inform-copy">
+                    <h2 class="inform-heading">개인의 통찰을 모아 정상으로,<br><span class="accent">SUMMIT</span>에서 완성하는 가치</h2>
+                    <p class="inform-body">개인의 통찰을 넘어 공동의 유기적인 협력으로 경제의 <br>흐름을 읽어내며
+                        서로의 시각이 더해질 때 비로소 금융<br> 그 이상의 가치를 창출하며
+                        우리만의 정상에 도달합니다.</p>
+                </div>
+                <div class="inform-media">
+                    <div class="inform-deck" aria-label="SUMMIT 가치 카드" tabindex="0">
+                        <img class="value-card" id="summit-image1" alt="SUMMIT 카드 이미지 1">
+                        <img class="value-card" id="summit-image2" alt="SUMMIT 카드 이미지 2">
+                        <img class="value-card" id="summit-image3" alt="SUMMIT 카드 이미지 3">
+                        <img class="value-card" id="summit-image4" alt="SUMMIT 카드 이미지 4">
+                        <img class="value-card" id="summit-image5" alt="SUMMIT 카드 이미지 5">
+                        <img class="value-card" id="summit-image6" alt="SUMMIT 카드 이미지 6">
+                        <img class="value-card" id="summit-image7" alt="SUMMIT 카드 이미지 7">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 동아리 마스코트 소개 섹션 -->
+    <div class="section-gap"></div>
+    <div class="content section mascot" id="mascot-section" style="display: none;">
+        <div class="mascot-box">
+            <div class="mascot-title-wrap">
+                <h1 class="mascot-title">BE SUMMIT</h1>
+            </div>
+            <div class="mascot-image-wrap">
+                <img id="oreumi" alt="SUMMIT Mascot Oreumi" class="mascot-image">
+            </div>
+            <div class="mascot-outline-wrap" aria-hidden="true">
+                <h1 class="mascot-outline">BE SUMMIT</h1>   
+            </div>
+            <!-- 마스코트 소개 우측 텍스트 카드 -->
+            <div class="mascot-info-wrap">
+                <div class="mascot-info-card">
+                    <h2 class="mascot-info-title">오르미 <span class="info-roman">(Oreumi)</span></h2>
+                    <p class="mascot-info-sub">SUMMIT의 대표 귀염둥이, 오르미</p>
+                    <p class="mascot-info-body">무리를 이끄는 늑대처럼 강인한 리더십과 날카로운 통찰력을 상징하며, 부원들이 세상의 경제적 가치를 발견하고 함께 정상에 도달하도록 언제나 앞장서서 달립니다.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 프로젝트 섹션 -->
+    <div class="content center-content section project" id="project-section">
+        <div class="project-container">
+            <h2 class="project-title">프로젝트</h2>
+            <div class="project-filters"></div>
+            <!-- 필터 칩 템플릿 -->
+            <template id="project-chip-template">
+                <button class="project-chip" type="button"></button>
+            </template>
+            <div class="project-grid"></div>
+            <!-- 템플릿: 자바스크립트로 복제하여 그리드에 추가 -->
+            <template id="project-card-template">
+                <div class="project-card">
+                    <div class="project-photo" aria-label="project image placeholder"></div>
+                    <div class="project-info">
+                        <div class="project-meta"></div>
+                        <p class="project-name"></p>
+                        <p class="project-desc"></p>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+    
+    <!-- 멤버 섹션 -->
+    <div class="content section member" id="member-section" style="display: none;">
+        <div class="member-container">
+            <h2 class="member-title">멤버</h2>
+            <div class="member-filters"></div>
+            <!-- 필터 칩 템플릿 -->
+            <template id="member-chip-template">
+                <button class="member-chip" type="button"></button>
+            </template>
+            <div class="member-grid"></div>
+            <!-- 템플릿: 자바스크립트로 복제하여 그리드에 추가 -->
+            <template id="member-card-template">
+                <div class="member-card">
+                    <div class="member-photo" aria-label="member placeholder">
+                        <img class="member-image" src="" alt="" />
+                    </div>
+                    <div class="member-tags"></div>
+                    <div class="member-info">
+                        <h3 class="member-name"></h3>
+                        <p class="member-bio"></p>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+    
+    <!-- QnA 섹션 -->
+    <div class="content section qna" id="qna-section" style="display: none;">
+        <div class="qna-container">
+            <h2 class="qna-title">자주 묻는 질문</h2>
+            <div class="qna-list">     
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- 학번 작성 탭 (합격자 확인 섹션) -->
+    <div class="content section result" id="result-section" aria-label="학번 작성 탭" style="display: none;">
+        <img id="summit-main-logo" alt="Summit Main Logo" class="result-top-left-logo" id="resultSectionHomeLogo">
+        <div class="result-wrap">
+            <div class="result-hero">
+                <img id="summit-serve-logo" alt="Summit Serve" class="result-logo">
+                <p class="result-subtitle">최종 합격자 조회</p> 
+            </div>
+            <div class="result-card">
+                <svg class="snake-border">
+                    <rect x="0" y="0" width="100%" height="100%" pathLength="1"></rect>
+                </svg>
+                <div id="result-error-box" class="result-error-box" style="display:none;"></div>
+                <div class="result-row">
+                    <label class="result-label" for="studentId">학번</label>
+                    <input id="studentId" class="result-input" type="text" placeholder="학번을 입력하세요" autocomplete="off" />
+                </div>
+                <div class="result-row">
+                    <label class="result-label" for="studentName">이름</label>
+                    <input id="studentName" class="result-input" type="text" placeholder="이름을 입력하세요" autocomplete="off" />
+                </div>
+                <div class="result-button">
+                    <div class="result-button">
+                        <button id="checkResultBtn" class="result-action" type="button">조회하기</button>
+                    </div>
+                </div>
+                <!-- 전화번호 입력 모달 -->
+                <div id="modal-phone-bg" class="modal-bg" style="display:none;">
+                    <div class="modal-box">
+                        <span class="modal-icon">📱</span>
+                        <div class="modal-message">전화번호를 입력하세요<br><span style='font-size:0.98rem;color:#a50619;font-weight:400;'>본인 인증을 위해 필요합니다.</span></div>
+                        <input id="studentPhoneInput" class="result-input" type="text" placeholder="전화번호 입력 (숫자만)" autocomplete="off" style="margin-bottom:18px;" />
+                        <div style="display:flex;gap:12px;justify-content:center;">
+                            <button class="modal-close" id="modal-phone-close" style="flex:1;">확인</button>
+                            <button class="modal-close" id="modal-phone-cancel" style="flex:1;background:#aaa;color:#fff;">취소</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 최종 합격자: 조회 결과 (합격) -->
+    <div class="content section result-pass" id="result-pass-section" style="display: none;">
+        <img id="summit-main-logo" alt="Summit Main Logo" class="result-top-left-logo" id="resultPassHomeLogo">
+        <!-- 배경 막대 애니메이션 -->
+        <div class="result-pass-bars-bg" style="position:absolute;top:0;left:0;width:100vw;height:100vh;z-index:0;overflow:hidden;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" style="width:100vw;height:100vh;">
+                <defs>
+                    <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#31090C" />
+                        <stop offset="25%" stop-color="#3C0C0F" />
+                        <stop offset="50%" stop-color="#511214" />
+                        <stop offset="75%" stop-color="#631619" />
+                        <stop offset="100%" stop-color="#66171A" />
+                    </linearGradient>
+                </defs>
+                <g transform="skewX(-16) translate(440, -50)">
+                    <rect class="bar bar-1" x="-280" y="230" width="140" height="330" fill="url(#barGradient)" />
+                    <rect class="bar bar-2" x="-90" y="160" width="140" height="250" fill="url(#barGradient)" />
+                    <rect class="bar bar-3" x="100" y="280" width="140" height="170" fill="url(#barGradient)" />
+                    <rect class="bar bar-4" x="290" y="0" width="140" height="380" fill="url(#barGradient)" />
+                </g>
+            </svg>
+        </div>
+        <div class="result-wrap" style="position:relative;z-index:1;">
+            <div class="result-hero">
+                <img id="summit-serve-logo" alt="Summit Serve" class="result-logo">
+                <p class="result-subtitle">최종 합격자 조회</p>
+            </div>
+            <div class="result-card">
+                <div class="result-status-box">
+                    <h2 class="result-status-title">축하드립니다!</h2>
+                    <p class="result-status-name"><span class="name-accent">양세린 님</span>은 SUMMIT 2기 모집에 최종 <span class="accent">합격</span>하셨습니다.</p>
+                    <p class="result-status-desc">약 20분 후, 기재해 주신 전화번호로 합격 안내 문자가 발송됩니다.<br>다시 한번 지원해 주셔서 감사합니다.</p>
+                    <p class="result-status-footer">SUMMIT의 2번째 G.O.A.T가 되신 것을 축하드립니다.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 최종 합격자: 조회 결과 (불합격) -->
+    <div class="content section result-fail" id="result-fail-section" style="display: none;">
+        <img id="summit-serve-logo" alt="Summit Main Logo" class="result-top-left-logo" id="resultFailHomeLogo">
+        <div class="result-wrap">
+            <div class="result-hero">
+                <img id="summit-serve-logo" alt="Summit Serve" class="result-logo">
+                <p class="result-subtitle">최종 합격자 조회</p>
+            </div>
+                        <div class="result-card" id="resultFailCard">
+                            <div class="result-status-text fail" id="resultFailMessage">
+                                <!-- 이름과 메시지가 JS로 들어감 -->
+                            </div>
+                        </div>
+        </div>
+    </div>
+        <script type="module" src="app.js"></script>
+
+        <!-- 프로젝트 세부 탭 (카드 클릭 시 표시) -->
+        <div id="project-detail-section" style="display:none;">
+            <div class="project-detail-box"></div>
+            <div class="project-detail-controls">
+                <button class="project-detail-arrow" id="project-detail-arrow-left" aria-label="이전 이미지">
+                    <svg class="arrow-svg" width="32" height="32" viewBox="0 0 24 24" fill="none">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" stroke="#fff" stroke-width="2.8" />
+                    </svg>
+                </button>
+                <span class="project-detail-index" id="project-detail-image-index">1 / 1</span>
+                <button class="project-detail-arrow" id="project-detail-arrow-right" aria-label="다음 이미지">
+                    <svg class="arrow-svg" width="32" height="32" viewBox="0 0 24 24" fill="none">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke="#fff" stroke-width="2.8" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+</body>
+</html>

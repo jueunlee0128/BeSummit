@@ -1,3 +1,67 @@
+/* 프로젝트 세부 탭 상세 정보 시안 스타일 */
+.project-detail-info-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    margin: 20px 0 2vw 18vw; /* 원하는 위치로 이동 */
+    padding: 0 0 0 0;
+    width: auto;
+    align-self: flex-start; /* 부모의 중앙 정렬 영향 해제 */
+}
+
+@media (max-width: 900px) {
+    .project-detail-info-box {
+        margin-left: 10vw; /* 태블릿 이하에서 좀 더 중앙에 가깝게 */
+    }
+}
+@media (max-width: 600px) {
+    .project-detail-info-box {
+        margin-left: 0;
+    }
+}
+.project-detail-year {
+    background: #000000;
+    color: #C30E23;
+    font-weight: 700;
+    font-size: 1.08em;
+    border-radius: 18px;
+    padding: 10px 22px 9px 22px;
+    display: inline-block;
+    margin-bottom: 2px;
+    letter-spacing: 0.5px;
+}
+.project-detail-title {
+    color: #fff;
+    font-size: 2.1em;
+    font-weight: 800;
+    margin-bottom: 0px;
+    letter-spacing: 0.5px;
+}
+.project-detail-desc {
+    color: #fff;
+    font-size: 1.13em;
+    font-weight: 400;
+    margin-bottom: 0px;
+    opacity: 0.92;
+}
+.project-detail-members-row {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 8px;
+}
+.project-detail-member {
+    background: rgba(0,0,0,0);
+    color: #fff;
+    font-size: 1em;
+    font-weight: 600;
+    border: 1.5px solid white;
+    padding: 4px 18px 3px 18px;
+    display: inline-block;
+    margin-bottom: 0;
+    letter-spacing: 0.2px;
+}
 /* 프로젝트 세부 탭 뒤로가기 버튼 (박스 위, 왼쪽 정렬) */
 .project-detail-back {
     display: block;
@@ -91,41 +155,41 @@
 }
 /* 프로젝트 세부 탭: 중앙에 이름만, 자연스러운 전환 */
 #project-detail-section {
-    /* Scrollbar styling: same as project-section */
-    scrollbar-color: var(--scroll-thumb) var(--bg);
-    scrollbar-width: thin;
     background: transparent;
-    min-height: 100vh;
     width: 100vw;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    position: fixed;
-    top: 0;
-    left: 0;
+    position: relative;
     z-index: 1000;
     opacity: 0;
     transition: opacity 0.4s;
-    overflow-y: scroll;
-    height: 100vh;
+    overflow: visible;
+    height: auto;
+    max-height: none;
 }
 
-/* Scrollbar custom styling */
-#project-detail-section::-webkit-scrollbar {
+/* 프로젝트 세부 탭 스크롤바: body에 적용 (다른 탭들과 동일) */
+body.project-detail-mode::-webkit-scrollbar {
     width: 6px;
     height: 6px;
 }
-#project-detail-section::-webkit-scrollbar-track {
+body.project-detail-mode::-webkit-scrollbar-track {
     background: var(--bg);
 }
-#project-detail-section::-webkit-scrollbar-thumb {
+body.project-detail-mode::-webkit-scrollbar-thumb {
     background: var(--scroll-thumb);
     border-radius: 8px;
     border: 1px solid var(--bg);
 }
-#project-detail-section::-webkit-scrollbar-thumb:hover {
+body.project-detail-mode::-webkit-scrollbar-thumb:hover {
     background: var(--scroll-thumb-hover);
+}
+/* Firefox */
+body.project-detail-mode {
+    scrollbar-color: var(--scroll-thumb) var(--bg);
+    scrollbar-width: thin;
 }
 .project-detail-box {
     position: relative;
@@ -166,8 +230,8 @@
     border-radius: 24px;
     box-shadow: 0 4px 24px rgba(0,0,0,0.2);
     padding: 48px 32px;
-    width: 800px;
-    height: 450px;
+    width: 64vw;
+    min-height: 68vh;
     margin: auto;
     margin-top: 0;
     margin-bottom: 0;
@@ -697,6 +761,11 @@ body, html {
     display: block;   /* 섹션들이 수직으로 쌓이도록 일반 블록 흐름 사용 */
     overflow-y: hidden;
     position: relative;
+}
+/* 프로젝트 세부 탭: 다른 탭들과 동일한 스크롤 구조 */
+body.loaded.project-detail-mode {
+    overflow-y: auto;
+    /* min-height는 JS에서 동적으로 설정됨 */
 }
 
 /* 아래로 스크롤 유도 화살표 */

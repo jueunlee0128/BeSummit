@@ -181,12 +181,75 @@ function renderQnAList() {
 
 // ===== 상단 로고 및 네비게이션 클릭 시 탭 이동 =====
 document.addEventListener('DOMContentLoaded', function () {
-  // 상단 좌측 로고 클릭 시 홈으로 이동
+  // 상단 좌측 로고 클릭 시 홈으로 이동 (최종 합격자 조회 탭과 동일한 애니메이션)
   const topLeftLogo = document.querySelector('.top-left-logo');
   if (topLeftLogo) {
     topLeftLogo.style.cursor = 'pointer';
-    topLeftLogo.addEventListener('click', function () {
+    topLeftLogo.addEventListener('click', function (e) {
+      e.preventDefault();
+      const currentTab = window.__currentTab || '';
       showSection('home');
+      setTimeout(() => {
+        // 홈 섹션 진입 시 상단 로고/네비 항상 복원
+        const topLeftLogo = document.querySelector('.top-left-logo');
+        const topRightNav = document.querySelector('.top-right-nav');
+        if (topLeftLogo) {
+          topLeftLogo.removeAttribute('style');
+          topLeftLogo.style.display = 'block';
+          topLeftLogo.style.visibility = 'visible';
+          topLeftLogo.style.opacity = '1';
+          topLeftLogo.style.zIndex = '100';
+        }
+        if (topRightNav) {
+          topRightNav.removeAttribute('style');
+          topRightNav.style.display = 'flex';
+          topRightNav.style.visibility = 'visible';
+          topRightNav.style.opacity = '1';
+          topRightNav.style.zIndex = '101';
+        }
+        // 입력칸 초기화 (있는 경우)
+        const idInput = document.getElementById('studentId');
+        const nameInput = document.getElementById('studentName');
+        if (idInput) idInput.value = '';
+        if (nameInput) nameInput.value = '';
+        if ([
+          'project', 'member', 'qna',
+          'result', 'result-pass', 'result-fail'
+        ].includes(currentTab)) {
+          // 홈 섹션 요소만 애니메이션(상단 로고/네비 제외)
+          if (typeof gsap !== 'undefined') {
+            const home = document.getElementById('home-section');
+            const logo = home ? home.querySelector('.center-logo') : null;
+            const subtitle = home ? home.querySelector('.subtitle') : null;
+            const buttons = document.getElementById('recruitButtons');
+            gsap.set([logo, subtitle, buttons].filter(Boolean), { opacity: 0, y: 20 });
+            gsap.to([logo, subtitle, buttons].filter(Boolean), {
+              opacity: 1,
+              y: 0,
+              duration: 0.3,
+              ease: 'power2.out',
+              stagger: 0
+            });
+          }
+        } else {
+          if (typeof initHomeIntroAnimation === 'function') {
+            setTimeout(() => { initHomeIntroAnimation(); }, 100);
+          }
+        }
+        if (typeof ScrollTrigger !== 'undefined') {
+          initSectionPins();
+          initInformCards();
+          initInformDeck();
+          initInformDots();
+          initMascotAnimations();
+          setTimeout(() => {
+            if (typeof ScrollTrigger !== 'undefined') {
+              ScrollTrigger.refresh();
+            }
+            restoreTabScroll('home');
+          }, 60);
+        }
+      }, 400);
     });
   }
   // 네비게이션 각 탭 클릭 시 해당 섹션으로 이동
@@ -237,8 +300,11 @@ function addProjectCard({ name, year, desc, images }) {
       const projectSection = document.getElementById('project-section');
       const detailSection = document.getElementById('project-detail-section');
       if (!detailSection) return;
-      // 세부 탭 진입 시 body 스크롤 허용
-      document.body.style.overflowY = 'auto';
+      // 세부 탭 진입 시 body 스크롤 허용 (다른 탭들과 동일한 구조)
+      // body.loaded 클래스가 있어야 스크롤이 작동함
+      if (!document.body.classList.contains('loaded')) {
+        document.body.classList.add('loaded');
+      }
       const detailBox = detailSection.querySelector('.project-detail-box');
       const leftArrow = document.getElementById('project-detail-arrow-left');
       const rightArrow = document.getElementById('project-detail-arrow-right');
@@ -277,8 +343,8 @@ function addProjectCard({ name, year, desc, images }) {
             // 프로젝트 탭 높이 복원
             updateProjectScrollPadding();
             projectSection.style.display = 'flex';
-            // 세부 탭 닫힐 때 body 스크롤 다시 숨김
-            document.body.style.overflowY = 'hidden';
+            // 세부 탭 닫힐 때 body 스크롤 처리 (다른 탭들과 동일한 구조)
+            // body.loaded는 유지하되, project-detail-mode만 제거하면 됨
             setTimeout(() => {
               projectSection.style.opacity = '1';
               // 프로젝트 탭 복귀 시 이전 스크롤 위치로 이동
@@ -295,8 +361,60 @@ function addProjectCard({ name, year, desc, images }) {
       detailSection.appendChild(detailBox);
       if (controls) detailSection.appendChild(controls);
 
+      // === 상세 정보 영역(시안 스타일) 추가: controls 바로 뒤에 infoBox 추가 ===
+      // 기존 infoBox가 있으면 먼저 제거
+      const oldInfoBox = document.querySelector('.project-detail-info-box');
+      if (oldInfoBox && oldInfoBox.parentNode) oldInfoBox.parentNode.removeChild(oldInfoBox);
+      // infoBox 생성
+      const infoBox = document.createElement('div');
+      infoBox.className = 'project-detail-info-box';
+      // 년도(둥근 네모)
+      const yearBox = document.createElement('div');
+      yearBox.className = 'project-detail-year';
+      yearBox.textContent = year || '';
+      infoBox.appendChild(yearBox);
+      // 프로젝트명
+      const nameBox = document.createElement('div');
+      nameBox.className = 'project-detail-title';
+      nameBox.textContent = name || '';
+      infoBox.appendChild(nameBox);
+      // 설명
+      const descBox = document.createElement('div');
+      descBox.className = 'project-detail-desc';
+      descBox.textContent = desc || '';
+      infoBox.appendChild(descBox);
+      // 멤버 리스트
+      const projectData = PROJECTS.find(p => p.name === name && p.year === year);
+      let memberNames = (projectData && Array.isArray(projectData.projectmembers)) ? projectData.projectmembers : [];
+      const membersRow = document.createElement('div');
+      membersRow.className = 'project-detail-members-row';
+      memberNames.forEach(memberName => {
+        const memberBox = document.createElement('div');
+        memberBox.className = 'project-detail-member';
+        // MEMBERS에서 이름이 일치하는 멤버의 기수 찾기 (tags 중 '기'로 끝나는 값 또는 창립멤버)
+        const memberObj = MEMBERS.find(m => m.name === memberName);
+        let gen = '';
+        if (memberObj && Array.isArray(memberObj.tags)) {
+          // 1. 기수 태그
+          let genTag = memberObj.tags.find(tag => /기$/.test(tag));
+          // 2. 창립멤버면 1기로 간주
+          if (!genTag && memberObj.tags.includes('창립멤버')) {
+            genTag = '1기';
+          }
+          if (genTag) gen = genTag;
+        }
+        memberBox.textContent = gen ? `${gen} ${memberName}` : memberName;
+        membersRow.appendChild(memberBox);
+      });
+      if (memberNames.length > 0) infoBox.appendChild(membersRow);
+      // controls 바로 뒤에 infoBox 추가
+      if (controls && controls.parentNode) {
+        controls.parentNode.insertBefore(infoBox, controls.nextSibling);
+      }
+      if (detailBox) {
+        detailBox.innerHTML = '';
+      }
       // 이미지 슬라이드 렌더 함수
-      // 슬라이드 애니메이션 적용 렌더 함수
       let lastIndex = 0;
       function renderImage(direction = null) {
         if (!detailBox) return;
@@ -702,6 +820,40 @@ function initSmoothScrolling() {
   gsap.ticker.lagSmoothing(0);
 }
 
+// ===== Lenis 스크롤 범위 강제 업데이트 =====
+function updateLenisScrollRange() {
+  if (!__lenisInstance) return;
+  
+  // Lenis의 resize 메서드가 있으면 호출하여 스크롤 범위 업데이트
+  if (typeof __lenisInstance.resize === 'function') {
+    __lenisInstance.resize();
+  }
+  
+  // ScrollTrigger도 함께 업데이트
+  if (typeof ScrollTrigger !== 'undefined') {
+    ScrollTrigger.refresh();
+  }
+  
+  // 강제로 스크롤 범위 재계산 (Lenis 내부 메서드가 있는 경우)
+  if (__lenisInstance.limit) {
+    // Lenis의 limit 속성을 강제로 재계산
+    const bodyHeight = Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.offsetHeight,
+      document.body.clientHeight,
+      document.documentElement.clientHeight
+    );
+    // Lenis가 스크롤 범위를 제대로 인식하도록 강제 업데이트
+    requestAnimationFrame(() => {
+      if (typeof __lenisInstance.resize === 'function') {
+        __lenisInstance.resize();
+      }
+    });
+  }
+}
+
 // ===== GSAP: Pin sections when they hit the top =====
 function initSectionPins() {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
@@ -1007,6 +1159,10 @@ function initMascotAnimations() {
 
 // ===== 섹션 전환 기능 =====
 function showSection(sectionName) {
+    // 현재 섹션을 localStorage에 저장
+    try {
+      localStorage.setItem('summit_last_section', sectionName);
+    } catch (e) {}
   // 합격자 창 배경 바 슬라이드 애니메이션
   if (sectionName === 'result-pass') {
     setTimeout(() => {
@@ -1049,23 +1205,25 @@ function showSection(sectionName) {
     detailSection.style.opacity = '0';
     setTimeout(() => {
       detailSection.style.display = 'none';
-      // 세부 탭 닫힐 때 body 스크롤 다시 숨김
-      document.body.style.overflowY = 'hidden';
+      // 세부 탭 닫힐 때 body 스크롤 처리 (다른 탭들과 동일한 구조)
+      // body.loaded는 유지하되, project-detail-mode만 제거하면 됨
     }, 400);
   } else if (detailSection) {
     detailSection.style.display = 'none';
     detailSection.style.opacity = '0';
-    document.body.style.overflowY = 'hidden';
+    // body.loaded는 유지하되, project-detail-mode만 제거하면 됨
   }
   setTimeout(() => {
     const targetSection = document.getElementById(targetId);
     fadeSectionIn(targetSection);
-    // 탭 진입 시 항상 스크롤 상단으로 이동
-    if (window.__lenisInstance && typeof window.__lenisInstance.scrollTo === 'function') {
-      window.__lenisInstance.scrollTo(0, { immediate: true });
-    } else {
-      window.scrollTo(0, 0);
-    }
+      // 탭 진입 시 항상 스크롤 상단으로 이동
+      if (window.__lenisInstance && typeof window.__lenisInstance.scrollTo === 'function') {
+        window.__lenisInstance.scrollTo(0, { immediate: true });
+      } else {
+        window.scrollTo(0, 0);
+      }
+      // Lenis 스크롤 범위 업데이트 (탭 전환 후 컨텐츠 높이 변경 반영)
+      setTimeout(() => updateLenisScrollRange(), 200);
     setTimeout(() => {
       const activeClass = `active-${sectionName}`;
       targetSection.classList.add(activeClass);
@@ -1076,6 +1234,8 @@ function showSection(sectionName) {
         document.body.classList.remove('qna-mode');
         document.body.classList.remove('member-mode');
         document.body.style.minHeight = '';
+        // 홈 탭에서도 Lenis 스크롤 범위 업데이트 (ScrollTrigger pin 후)
+        setTimeout(() => updateLenisScrollRange(), 300);
         enableHomeScroll();
         // 홈 화면에서는 섹션 간 간격 박스를 표시
         document.querySelectorAll('.section-gap').forEach(g => {
@@ -1151,11 +1311,22 @@ function showSection(sectionName) {
           document.body.classList.add('qna-mode');
           document.body.classList.remove('member-mode');
           document.body.classList.remove('project-mode');
-          document.body.style.minHeight = '200vh';
+          // 실제 컨텐츠 높이 측정
+          const qnaSection = document.getElementById('qna-section');
+          if (qnaSection) {
+            const sectionRect = qnaSection.getBoundingClientRect();
+            const actualHeight = sectionRect.height;
+            const actualVh = Math.max(200, Math.ceil(actualHeight / window.innerHeight * 100));
+            document.body.style.minHeight = `${actualVh}vh`;
+          } else {
+            document.body.style.minHeight = '200vh';
+          }
           // QnA 아코디언 초기화
           if (typeof initQnaAccordion === 'function') {
             initQnaAccordion();
           }
+          // Lenis 스크롤 범위 업데이트
+          setTimeout(() => updateLenisScrollRange(), 100);
         } else if (sectionName === 'member') {
           document.body.classList.add('member-mode');
           document.body.classList.remove('qna-mode');
@@ -1169,7 +1340,10 @@ function showSection(sectionName) {
           if (!window.__memberResizeBound) {
             window.__memberResizeBound = true;
             window.addEventListener('resize', () => {
-              if (__currentTab === 'member') updateMemberScrollPadding();
+              if (__currentTab === 'member') {
+                updateMemberScrollPadding();
+                updateLenisScrollRange();
+              }
             });
           }
         } else if (sectionName === 'project') {
@@ -1182,7 +1356,10 @@ function showSection(sectionName) {
             if (!window.__projectResizeBound) {
               window.__projectResizeBound = true;
               window.addEventListener('resize', () => {
-                if (__currentTab === 'project') updateProjectScrollPadding();
+                if (__currentTab === 'project') {
+                  updateProjectScrollPadding();
+                  updateLenisScrollRange();
+                }
               });
             }
             // 프로젝트 세부 탭에서도 상단 텍스트(로고, 네비) 항상 표시
@@ -1373,10 +1550,25 @@ function updateLoading() {
   if (progress >= 100 && isPageLoaded) {
     setTimeout(() => {
       // 로딩창 숨김
-      document.querySelector('.logo-container').classList.add('fade-out');
+      const logoContainer = document.querySelector('.logo-container');
+      logoContainer.classList.add('fade-out');
+      setTimeout(() => {
+        logoContainer.style.display = 'none';
+      }, 700); // fade-out 트랜지션 시간과 맞춤
       // 1단계: display 변경 (중앙 요소는 opacity 0, y 20px로 세팅)
       document.querySelector('.top-left-logo').style.display = 'block';
       document.querySelector('.top-right-nav').style.display = 'flex';
+      // 마지막 섹션 기억해서 복원
+      let lastSection = null;
+      try {
+        lastSection = localStorage.getItem('summit_last_section');
+      } catch (e) {}
+      if (lastSection && lastSection !== 'home') {
+        // body.loaded를 미리 추가해서 ::before 배경이 항상 사라지게 함
+        document.body.classList.add('loaded');
+        showSection(lastSection);
+        return;
+      }
       const homeSection = document.getElementById('home-section');
       homeSection.style.display = 'flex';
       // 중앙 요소들 opacity 0, y 20px로 세팅 (애니메이션 자연스럽게)
@@ -1671,12 +1863,24 @@ function updateProjectScrollPadding() {
   const w = window.innerWidth || document.documentElement.clientWidth || 0;
   const cols = w <= 640 ? 1 : (w <= 1024 ? 2 : 3);
   const rows = Math.max(1, Math.ceil(count / cols));
+  
+  // 실제 컨텐츠 높이 측정
+  const sectionRect = section.getBoundingClientRect();
+  const actualHeight = sectionRect.height;
+  const actualVh = Math.ceil(actualHeight / window.innerHeight * 100);
+  
   // 최소 스크롤 여유: 1행일 때 140vh, 추가 행마다 50vh 가산
   const base = 120; // vh
   const perRow = 50; // vh
-  const minVh = base + perRow * (rows - 1);
+  const calculatedVh = base + perRow * (rows - 1);
+  
+  // 실제 높이와 계산된 높이 중 더 큰 값 사용 (스크롤이 끝까지 내려가도록 보장)
+  const minVh = Math.max(calculatedVh, actualVh, 100);
+  
   if (document.body.classList.contains('project-mode')) {
     document.body.style.minHeight = `${minVh}vh`;
+    // Lenis 스크롤 범위 업데이트
+    setTimeout(() => updateLenisScrollRange(), 100);
   }
 }
 // ===== Member: dynamic scroll padding based on rows =====
@@ -1690,13 +1894,25 @@ function updateMemberScrollPadding() {
   const w = window.innerWidth || document.documentElement.clientWidth || 0;
   const cols = w <= 640 ? 1 : (w <= 1024 ? 2 : 3);
   const rows = Math.max(1, Math.ceil(count / cols));
+  
+  // 실제 컨텐츠 높이 측정
+  const sectionRect = section.getBoundingClientRect();
+  const actualHeight = sectionRect.height;
+  const actualVh = Math.ceil(actualHeight / window.innerHeight * 100);
+  
   // 최소 스크롤 여유: 1행일 때 140vh, 추가 행마다 50vh 가산
   const base = 140; // vh
   const perRow = 50; // vh
-  const minVh = base + perRow * (rows - 1);
+  const calculatedVh = base + perRow * (rows - 1);
+  
+  // 실제 높이와 계산된 높이 중 더 큰 값 사용 (스크롤이 끝까지 내려가도록 보장)
+  const minVh = Math.max(calculatedVh, actualVh, 100);
+  
   // 멤버 탭에 있을 때만 min-height를 동적으로 조정
   if (document.body.classList.contains('member-mode')) {
     document.body.style.minHeight = `${minVh}vh`;
+    // Lenis 스크롤 범위 업데이트
+    setTimeout(() => updateLenisScrollRange(), 100);
   }
 }
 
@@ -2239,26 +2455,48 @@ document.addEventListener('DOMContentLoaded', () => {
     if (rightArrow) addArrowClickAnimation(rightArrow);
 });
 
-// ===== 프로젝트 세부 탭: 컨텐츠 높이에 따라 body min-height 조정 =====
+// ===== 프로젝트 세부 탭: 컨텐츠 높이에 따라 body min-height 조정 (다른 탭들과 동일한 구조) =====
 function updateDetailScrollPadding() {
   const detailSection = document.getElementById('project-detail-section');
   if (!detailSection) return;
-  // 세부 컨텐츠의 실제 높이 측정
-  const box = detailSection.querySelector('.project-detail-box');
-  let contentHeight = 0;
-  if (box) {
-    // 컨트롤(화살표 등) 포함 전체 높이 계산
-    const controls = detailSection.querySelector('.project-detail-controls');
-    const boxRect = box.getBoundingClientRect();
-    let total = boxRect.height;
-    if (controls) {
-      const controlsRect = controls.getBoundingClientRect();
-      total += controlsRect.height;
-    }
-    contentHeight = total;
+  
+  // 전체 세부 섹션의 실제 높이 측정 (다른 탭들과 동일한 방식)
+  const backBtn = detailSection.querySelector('.project-detail-back');
+  const detailBox = detailSection.querySelector('.project-detail-box');
+  const infoBox = detailSection.querySelector('.project-detail-info-box');
+  const controls = detailSection.querySelector('.project-detail-controls');
+  
+  let totalHeight = 0;
+  
+  // 각 요소의 높이를 누적
+  if (backBtn) {
+    const rect = backBtn.getBoundingClientRect();
+    totalHeight += rect.height + parseInt(getComputedStyle(backBtn).marginTop) + parseInt(getComputedStyle(backBtn).marginBottom);
   }
-  // 최소 100vh 이상, 컨텐츠가 더 크면 그만큼
-  const vh = Math.max(100, Math.ceil(contentHeight / window.innerHeight * 100));
+  if (detailBox) {
+    const rect = detailBox.getBoundingClientRect();
+    totalHeight += rect.height;
+  }
+  if (infoBox) {
+    const rect = infoBox.getBoundingClientRect();
+    totalHeight += rect.height + parseInt(getComputedStyle(infoBox).marginTop) + parseInt(getComputedStyle(infoBox).marginBottom);
+  }
+  if (controls) {
+    const rect = controls.getBoundingClientRect();
+    totalHeight += rect.height + parseInt(getComputedStyle(controls).marginTop) + parseInt(getComputedStyle(controls).marginBottom);
+  }
+  
+  // 실제 body의 스크롤 높이도 확인
+  const bodyScrollHeight = Math.max(
+    document.body.scrollHeight,
+    document.documentElement.scrollHeight
+  );
+  const bodyScrollVh = Math.ceil(bodyScrollHeight / window.innerHeight * 100);
+  
+  // 최소 100vh 이상, 컨텐츠가 더 크면 그만큼 (실제 스크롤 높이도 고려)
+  const vh = Math.max(100, Math.ceil(totalHeight / window.innerHeight * 100), bodyScrollVh);
+  
+  // 프로젝트 세부 탭 모드일 때만 min-height 설정 (다른 탭들과 동일)
   if (document.body.classList.contains('project-detail-mode')) {
     document.body.style.minHeight = `${vh}vh`;
   }

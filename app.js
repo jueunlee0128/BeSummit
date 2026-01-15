@@ -1,5 +1,100 @@
+// ===== 모바일 햄버거 메뉴: 767px 이하에서 네비게이션 토글 =====
+function setupMobileHamburgerMenu() {
+  const nav = document.querySelector('nav.top-right-nav');
+  if (!nav) return;
+  const hamburger = nav.querySelector('.hamburger-menu');
+  const navLinks = nav.querySelector('.nav-links');
+  if (!hamburger || !navLinks) return;
+
+  function updateMenuDisplay() {
+    if (window.innerWidth <= 767) {
+      hamburger.style.display = 'block';
+      navLinks.classList.remove('open');
+      hamburger.classList.remove('active');
+    } else {
+      hamburger.style.display = 'none';
+      navLinks.classList.remove('open');
+      hamburger.classList.remove('active');
+    }
+  }
+
+  hamburger.addEventListener('click', function (e) {
+    e.stopPropagation();
+    const isOpen = navLinks.classList.toggle('open');
+    hamburger.classList.toggle('active', isOpen);
+  });
+
+  // 닫기: 메뉴 외부 클릭 시
+  document.addEventListener('click', function (e) {
+    if (window.innerWidth > 767) return;
+    if (!nav.contains(e.target)) {
+      navLinks.classList.remove('open');
+      hamburger.classList.remove('active');
+    }
+  });
+
+  // 리사이즈 시 메뉴 상태 초기화
+  window.addEventListener('resize', updateMenuDisplay);
+  updateMenuDisplay();
+}
+
+document.addEventListener('DOMContentLoaded', setupMobileHamburgerMenu);
 import { db } from './firebase.js';
 import { collection, getDocs, } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// 홈 탭 중앙 버튼 표시/숨김 로직을 함수로 분리
+function updateRecruitButtons() {
+  const buttons = document.getElementById('recruitButtons');
+  if (!buttons) return;
+  const applyBtn = buttons.querySelector('.primary-btn');
+  const resultBtn = buttons.querySelector('.secondary-btn');
+  // 기본은 모두 숨김
+  if (applyBtn) applyBtn.style.display = 'none';
+  if (resultBtn) resultBtn.style.display = 'none';
+  if (isRecruitmentPeriod && !isResultCheckPeriod) {
+    if (applyBtn) applyBtn.style.display = 'inline-flex';
+    buttons.style.display = 'flex';
+  } else if (isResultCheckPeriod && !isRecruitmentPeriod) {
+    if (resultBtn) resultBtn.style.display = 'inline-flex';
+    buttons.style.display = 'flex';
+  } else if (isRecruitmentPeriod && isResultCheckPeriod) {
+    // 둘 다 true인 예외 상황: 신청 버튼만 우선 노출
+    if (applyBtn) applyBtn.style.display = 'inline-flex';
+    buttons.style.display = 'flex';
+  } else {
+    // 어떤 기간도 아니면 컨테이너 숨김
+    buttons.style.display = 'none';
+  }
+
+  // 버튼 클릭 동작: 기간에 따라 탭 이동 (이벤트 중복 방지)
+  if (applyBtn) {
+    applyBtn.replaceWith(applyBtn.cloneNode(true));
+    const newApplyBtn = buttons.querySelector('.primary-btn');
+    newApplyBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (isRecruitmentPeriod) {
+        // 추후 'apply' 섹션이 생기면 탭 전환
+        // 현재는 홈 유지
+      } else {
+        alert('현재는 모집 신청 기간이 아닙니다.');
+      }
+    });
+  }
+  if (resultBtn) {
+    // robust: remove href to prevent anchor default, and rebind event
+    resultBtn.replaceWith(resultBtn.cloneNode(true));
+    const newResultBtn = buttons.querySelector('.secondary-btn');
+    newResultBtn.removeAttribute('href');
+    newResultBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (isResultCheckPeriod) {  
+        showSection('result');
+      } else {
+        alert('현재는 합격자 확인 기간이 아닙니다.');
+      }
+    });
+  }
+}
 
 // === 전역 이미지 맵 ===
 let SERVE_IMAGES_MAP = {};
@@ -188,68 +283,12 @@ document.addEventListener('DOMContentLoaded', function () {
     topLeftLogo.addEventListener('click', function (e) {
       e.preventDefault();
       const currentTab = window.__currentTab || '';
-      showSection('home');
-      setTimeout(() => {
-        // 홈 섹션 진입 시 상단 로고/네비 항상 복원
-        const topLeftLogo = document.querySelector('.top-left-logo');
-        const topRightNav = document.querySelector('.top-right-nav');
-        if (topLeftLogo) {
-          topLeftLogo.removeAttribute('style');
-          topLeftLogo.style.display = 'block';
-          topLeftLogo.style.visibility = 'visible';
-          topLeftLogo.style.opacity = '1';
-          topLeftLogo.style.zIndex = '100';
-        }
-        if (topRightNav) {
-          topRightNav.removeAttribute('style');
-          topRightNav.style.display = 'flex';
-          topRightNav.style.visibility = 'visible';
-          topRightNav.style.opacity = '1';
-          topRightNav.style.zIndex = '101';
-        }
-        // 입력칸 초기화 (있는 경우)
-        const idInput = document.getElementById('studentId');
-        const nameInput = document.getElementById('studentName');
-        if (idInput) idInput.value = '';
-        if (nameInput) nameInput.value = '';
-        if ([
-          'project', 'member', 'qna',
-          'result', 'result-pass', 'result-fail'
-        ].includes(currentTab)) {
-          // 홈 섹션 요소만 애니메이션(상단 로고/네비 제외)
-          if (typeof gsap !== 'undefined') {
-            const home = document.getElementById('home-section');
-            const logo = home ? home.querySelector('.center-logo') : null;
-            const subtitle = home ? home.querySelector('.subtitle') : null;
-            const buttons = document.getElementById('recruitButtons');
-            gsap.set([logo, subtitle, buttons].filter(Boolean), { opacity: 0, y: 20 });
-            gsap.to([logo, subtitle, buttons].filter(Boolean), {
-              opacity: 1,
-              y: 0,
-              duration: 0.3,
-              ease: 'power2.out',
-              stagger: 0
-            });
-          }
-        } else {
-          if (typeof initHomeIntroAnimation === 'function') {
-            setTimeout(() => { initHomeIntroAnimation(); }, 100);
-          }
-        }
-        if (typeof ScrollTrigger !== 'undefined') {
-          initSectionPins();
-          initInformCards();
-          initInformDeck();
-          initInformDots();
-          initMascotAnimations();
-          setTimeout(() => {
-            if (typeof ScrollTrigger !== 'undefined') {
-              ScrollTrigger.refresh();
-            }
-            restoreTabScroll('home');
-          }, 60);
-        }
-      }, 400);
+      if (currentTab === 'home') return; // 홈 탭이면 아무 동작도 하지 않음
+      // 네비게이션 바의 홈 텍스트 클릭과 동일하게 동작
+      const homeNavLink = document.querySelector('.nav-link[data-section="home"]');
+      if (homeNavLink) {
+        homeNavLink.click();
+      }
     });
   }
   // 네비게이션 각 탭 클릭 시 해당 섹션으로 이동
@@ -318,16 +357,23 @@ function addProjectCard({ name, year, desc, images }) {
         backBtn.className = 'project-detail-back';
         backBtn.id = 'project-detail-back-btn';
         backBtn.setAttribute('aria-label', '프로젝트 목록으로 돌아가기');
+        // 모바일: gap, font-size 비율 단위, 데스크탑: px/em
+        let gap = window.innerWidth <= 767 ? '2vw' : '10px';
+        let fontSize = window.innerWidth <= 767 ? '4vw' : '1.3em';
         backBtn.innerHTML = `
-          <span style="display:flex;align-items:center;gap:10px;">
+          <span style="display:flex;align-items:center;gap:${gap};">
             <svg width="66" height="66" viewBox="0 0 44 44" fill="none">
               <polyline points="28,12 16,22 28,32" fill="none" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span style="font-size:1.3em;color:#ffffff;font-weight:500;">돌아가기</span>
+            <span style="font-size:${fontSize};color:#ffffff;font-weight:500;">돌아가기</span>
           </span>
         `;
         backBtn.style.display = 'block';
-        backBtn.style.margin = '100px 0px 30px 150px'; // 위쪽도 충분히 띄움
+        if (window.innerWidth <= 767) {
+          backBtn.style.margin = '6vh 0 2vh 4vw';
+        } else {
+          backBtn.style.margin = '100px 0px 30px 150px';
+        }
         backBtn.style.alignSelf = 'flex-start';
         backBtn.addEventListener('click', (e) => {
           e.preventDefault();
@@ -601,8 +647,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 // ===== 동아리 신청/합격자 확인 기간 설정 =====
-const isRecruitmentPeriod = false;   // true: 모집 신청 기간
-const isResultCheckPeriod = true;  // true: 합격자 확인 기간
+let isRecruitmentPeriod = false;   // Firestore에서 동적으로 할당
+let isResultCheckPeriod = false;   // Firestore에서 동적으로 할당
+
+// Firestore에서 모집/합격자 확인 기간 값을 불러와서 전역 변수에 할당
+async function loadPeriodFlags() {
+  try {
+    const colRef = collection(db, 'period');
+    const snapshot = await getDocs(colRef);
+    if (!snapshot.empty) {
+      // period 컬렉션에 문서가 1개라고 가정
+      const data = snapshot.docs[0].data();
+      isRecruitmentPeriod = !!data.isRecruitmentPeriod;
+      isResultCheckPeriod = !!data.isResultCheckPeriod;
+    }
+    // Firestore 값 불러온 뒤 버튼 상태 항상 맞춤
+    updateRecruitButtons();
+  } catch (e) {
+    console.error('기간 정보 불러오기 실패:', e);
+  }
+}
 
 
 // ===== 합격/불합격자 데이터 저장 =====
@@ -1229,6 +1293,7 @@ function showSection(sectionName) {
       targetSection.classList.add(activeClass);
       // 홈 전환 시 스크롤 효과 활성화, 그 외는 비활성화
       if (sectionName === 'home') {
+        updateRecruitButtons();
         document.body.classList.add('home-mode');
         // QnA/멤버 모드 해제 및 인라인 높이 초기화
         document.body.classList.remove('qna-mode');
@@ -1563,6 +1628,11 @@ function updateLoading() {
       try {
         lastSection = localStorage.getItem('summit_last_section');
       } catch (e) {}
+      // result/result-pass/result-fail에서 새로고침 시 홈으로 강제 이동
+      if (lastSection && ['result', 'result-pass', 'result-fail'].includes(lastSection)) {
+        localStorage.setItem('summit_last_section', 'home');
+        lastSection = 'home';
+      }
       if (lastSection && lastSection !== 'home') {
         // body.loaded를 미리 추가해서 ::before 배경이 항상 사라지게 함
         document.body.classList.add('loaded');
@@ -1828,6 +1898,16 @@ function renderMemberGrid(fadeIn = false) {
     const nameEl = node.querySelector('.member-name');
     const bioEl = node.querySelector('.member-bio');
     if (nameEl) nameEl.textContent = m.name || '멤버';
+    // major(학과) 정보 추가
+    if (nameEl && m.major) {
+      const majorEl = document.createElement('div');
+      majorEl.className = 'member-major';
+      majorEl.textContent = m.major;
+      majorEl.style.fontSize = '0.9em';
+      majorEl.style.color = 'rgba(255,255,255,0.4)';
+      majorEl.style.fontWeight = '500';
+      nameEl.insertAdjacentElement('afterend', majorEl);
+    }
     if (bioEl) bioEl.textContent = m.bio || '';
     // 역할 칩
     const tagsWrap = node.querySelector('.member-tags');
@@ -1939,6 +2019,14 @@ function initMemberSection() {
   renderMemberFilters();
   renderMemberGrid();
 }
+
+// ===== 모바일 환경 감지 및 body에 is-mobile 클래스 토글 =====
+function updateMobileClass() {
+  const isMobile = window.matchMedia('(max-width: 767px)').matches;
+  document.body.classList.toggle('is-mobile', isMobile);
+}
+window.addEventListener('resize', updateMobileClass);
+document.addEventListener('DOMContentLoaded', updateMobileClass);
 
 // 초기화
 bars.forEach((bar) => {
@@ -2364,7 +2452,7 @@ function launchConfetti() {
         const burstConfettiSnapshot = confetti.map(c => ({...c}));
         fallStartTimeout = setTimeout(() => {
           phase = 'fall';
-          // burst에서 변환된 confetti + 중앙 위쪽에서 추가 생성된 confetti를 합침
+          // burst에서 변환된 confetti + 중앙 위쪽에서 추가로 생성된 confetti를 합침
           const centerCount = Math.floor(confettiCount * 0.5); // 전체의 50%만큼 추가로 더 많이 생성
           confetti = convertBurstToFallConfetti(burstConfettiSnapshot).concat(createCenterFallConfetti(centerCount));
         }, 150); // 0.15초 후 fall phase 시작(간격을 더 짧게)
@@ -2409,7 +2497,9 @@ function setupResultPassBarAnimation() {
   observer.observe(passSection, { attributes: true, attributeFilter: ['style'] });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadPeriodFlags();
   loadProjects();
   loadMembers();
   loadVolunteers();

@@ -2212,7 +2212,7 @@ html {
     border-radius: 2vw !important;
     font-size: 3.5vw !important;
 }
- .mascot-title, .mascot-outline, .mascot-info-title, .qna-title, .project-title, .member-title {
+.mascot-info-title, .qna-title, .project-title, .member-title {
     font-size: 5vw !important;
     margin-top: 2dvh !important;
     margin-bottom: 2dvh !important;
@@ -2283,7 +2283,7 @@ html {
     }
     .inform-media {
         position: absolute !important;
-        top: 120vw;
+        top: 110vw;
         left: 35vw;
         transform: translate(-50%, -50%);
         width: 60vw !important;
@@ -2317,10 +2317,10 @@ html {
         margin-right: auto;
     }
     .inform-deck .value-card.is-left {
-        --baseY: -140px !important;
+        --baseY: -30vw !important;
     }
     .inform-deck .value-card.is-right {
-        --baseY: 140px !important;
+        --baseY: 30vw !important;
     }
     .inform-deck {
         width: 92vw !important;
@@ -2342,4 +2342,86 @@ html {
         border-radius: 15px !important;
         object-fit: cover !important;
     }
+    .mascot-title-wrap {
+        width: 100%;
+        margin-bottom: 3dvh !important;
+    }
+    .mascot-outline-wrap {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .mascot-title {
+        margin: 0;
+        font-weight: 800;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        font-size: 10vw !important;
+        line-height: 1;
+        background: linear-gradient(90deg, #C30E23 10%, #7d0c1a 50%, #57050F 90%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .mascot-outline {
+        margin: 0;
+        font-weight: 800;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        font-size: 10vw !important;
+        line-height: 1;
+        color: transparent;
+        -webkit-text-stroke: 1px rgba(255,255,255,0.7);
+    }
+    .mascot-image {
+        width: 80vw !important;
+        height: auto !important;
+    }
+    .mascot-info-wrap {
+    position: absolute;
+    justify-content: center;
+    top: 54%;
+    transform: translateY(-50%);
+    z-index: 3;
+    max-width: 460px;
+    width: 70vw;
+    }
+.mascot-info-card {
+    padding: 15vw 8vw;
+    border-radius: 28px;
+    border: 1px solid #FFFFFF;
+    background: rgba(0,0,0,0.4);
+    box-shadow: 0 30px 90px rgba(0,0,0,0.45);
+    color: #fff;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+}
+.mascot-info-title {
+    margin: 0 0 14px;
+    font-size: clamp(28px, 3.8vw, 40px);
+    font-weight: 800;
+}
+.mascot-info-sub {
+    margin: 0 0 18px;
+    font-size: clamp(16px, 2.2vw, 22px);
+    font-weight: 700;
+    color: rgba(255,255,255,0.92);
+}
+.mascot-info-body {
+    margin: 0;
+    font-size: clamp(14px, 1.9vw, 18px);
+    line-height: 1.9;
+    color: rgba(255,255,255,0.92);
+}
+}
+
+@media screen and (min-width: 768px) {
+  .inform-copy::before,
+  .inform-copy::after {
+    width: 48px;
+    height: 48px;
+    filter: blur(18px);
+    box-shadow: 0 0 120px 48px rgba(255,255,255,0.22);
+  }
 }

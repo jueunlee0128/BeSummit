@@ -1069,7 +1069,9 @@ function initInformCards() {
 // === Inform: 7-card deck autoplay showing only 3 ===
 function initInformDeck() {
   const section = document.getElementById('inform-section');
-  if (!section || getComputedStyle(section).display === 'none') return;
+  if (!section) return;
+  const isMobile = window.innerWidth <= 767;
+  if (!isMobile && getComputedStyle(section).display === 'none') return;
   const deck = section.querySelector('.inform-deck');
   if (!deck) return;
   const cards = Array.from(deck.querySelectorAll('.value-card'));
@@ -1103,8 +1105,9 @@ function initInformDeck() {
   // Initial placement
   setWindow();
 
-  // Autoplay only while section is in view
-  if (typeof ScrollTrigger !== 'undefined') {
+  if (isMobile) {
+    if (!intervalId) intervalId = setInterval(next, AUTOPLAY_MS);
+  } else if (typeof ScrollTrigger !== 'undefined') {
     ScrollTrigger.create({
       trigger: section,
       start: 'top bottom',
@@ -1115,7 +1118,6 @@ function initInformDeck() {
       onLeaveBack: () => { if (intervalId) { clearInterval(intervalId); intervalId = null; } },
     });
   } else {
-    // Fallback: always autoplay
     if (!intervalId) intervalId = setInterval(next, AUTOPLAY_MS);
   }
 }
@@ -1125,7 +1127,16 @@ function initInformDots() {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
   gsap.registerPlugin(ScrollTrigger);
   const section = document.getElementById('inform-section');
-  if (!section || getComputedStyle(section).display === 'none') return;
+  if (!section) return;
+  const isMobile = window.innerWidth <= 767;
+  if (!isMobile && getComputedStyle(section).display === 'none') return;
+  // 모바일에서 항상 inform 카드/점 초기화
+  window.addEventListener('resize', () => {
+    if (window.innerWidth <= 767) {
+      initInformDeck();
+      initInformDots();
+    }
+  });
   const copy = section.querySelector('.inform-copy');
   if (!copy) return;
 
@@ -1176,11 +1187,14 @@ function initMascotAnimations() {
     __mascotTL = null;
   }
 
-  // 로딩 직후 초기 상태: 화면 밖으로 배치
-  gsap.set(title, { xPercent: -120, opacity: 0 });     // 왼쪽 밖
-  gsap.set(outline, { xPercent: 120, opacity: 0 });    // 오른쪽 밖
+  // 모바일 여부 체크
+  const isMobile = window.innerWidth <= 767;
+
+  // 로딩 직후 초기 상태: 화면 밖으로 배치 (모바일/데스크탑 분기)
+  gsap.set(title, { xPercent: isMobile ? -80 : -120, opacity: 0 });     // 왼쪽 밖
+  gsap.set(outline, { xPercent: isMobile ? 80 : 120, opacity: 0 });    // 오른쪽 밖
   gsap.set(image, { yPercent: 120, opacity: 0 });      // 아래 밖
-  if (infoCard) gsap.set(infoCard, { xPercent: 120, opacity: 0 }); // 텍스트 카드: 오른쪽 밖
+  if (infoCard) gsap.set(infoCard, { xPercent: isMobile ? 80 : 120, opacity: 0 }); // 텍스트 카드: 오른쪽 밖
 
   // 스크롤 진행에 따라 이미지가 먼저 등장, 이어서 텍스트들이 동시에 등장
   __mascotTL = gsap.timeline({
@@ -1201,25 +1215,25 @@ function initMascotAnimations() {
     duration: 0.45
   }, 0);
 
-  // 2단계: 더 스크롤하면 텍스트(타이틀+아웃라인)만 양쪽에서 동시에 등장
+  // 2단계: 더 스크롤하면 텍스트(타이틀+아웃라인)만 양쪽에서 동시에 등장 (모바일/데스크탑 분기)
   __mascotTL.to([title, outline], {
-    xPercent: 0,
+    xPercent: isMobile ? 0 : 0,
     opacity: 1,
     ease: 'power1.out',
     duration: 0.45
   }, '+=0.25');
 
-  // 3단계: 추가 스크롤 시 정보 카드가 우측에서 들어오고, 이미지는 좌측으로 자연스럽게 밀림
+  // 3단계: 추가 스크롤 시 정보 카드가 우측에서 들어오고, 이미지는 좌측으로 자연스럽게 밀림 (모바일/데스크탑 분기)
   if (infoCard) {
     __mascotTL.to(infoCard, {
-      xPercent: -15, // 카드도 더 왼쪽으로 밀기
+      xPercent: isMobile ? 10 : -15, // 모바일은 중앙, 데스크탑은 더 왼쪽으로 밀기
       opacity: 1,
       ease: 'power1.out',
       duration: 0.45
     }, '+=0.25');
     // 카드 등장과 동시에 이미지가 좌측으로 살짝 이동
     __mascotTL.to(image, {
-      xPercent: -25, // 이미지를 더 왼쪽으로 밀어 강조
+      xPercent: isMobile ? 0 : -25, // 모바일은 중앙, 데스크탑은 더 왼쪽으로 밀어 강조
       ease: 'power1.out',
       duration: 0.45
     }, '-=0.45');

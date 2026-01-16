@@ -1,3 +1,4 @@
+
 /* === 모바일 햄버거 메뉴 === */
 
 /* 프로젝트 세부 탭 상세 정보 시안 스타일 */
@@ -1908,6 +1909,9 @@ html {
     overflow-x: hidden;
     font-size: 15px;
   }
+  body.loaded.home-mode {
+    min-height: 3800dvh; /* 홈에서만 스크롤 여유 확보 */
+  }
   .content, .section, .center-content {
     width: 100vw !important;
     min-width: 0 !important;
@@ -1964,10 +1968,10 @@ html {
 }
 .subtitle {
     font-size: clamp(10px, 5vw, 30px) !important;
-    margin-bottom: 2vh !important;
+    margin-bottom: 2dvh !important;
 }
 .section-gap {
-    height: 4vh !important;
+    height: 200dvh !important;
 }
   .project-container, .member-container, .qna-container {
     width: 100vw !important;
@@ -1977,7 +1981,7 @@ html {
   }
 .project-title, .member-title, .qna-title {
     font-size: 5vw !important;
-    margin: 2vh 0 1vh 0 !important;
+    margin: 2dvh 0 1dvh 0 !important;
 }
 .project-grid, .member-grid {
     grid-template-columns: 1fr !important;
@@ -2040,7 +2044,7 @@ html {
     width: 100vw !important;
     min-width: 0 !important;
     max-width: 100vw !important;
-    padding: 0 0 6vh 0 !important;
+    padding: 0 0 6dvh 0 !important;
     border-radius: 0 !important;
     left: 0 !important;
     top: 0 !important;
@@ -2049,7 +2053,7 @@ html {
 }
 .project-detail-controls {
     gap: 2vw !important;
-    margin-top: 2vh !important;
+    margin-top: 2dvh !important;
 }
 .project-detail-arrow {
     width: 9vw !important;
@@ -2057,7 +2061,7 @@ html {
 }
 .project-detail-year, .project-detail-title, .project-detail-desc {
     font-size: 4vw !important;
-    padding: 1vh 0 !important;
+    padding: 1dvh 0 !important;
 }
 .project-detail-members-row {
     flex-direction: column !important;
@@ -2065,13 +2069,13 @@ html {
 }
 .project-detail-member {
     font-size: 3.8vw !important;
-    padding: 0.5vh 0 !important;
+    padding: 0.5dvh 0 !important;
 }
 .project-detail-back {
-    margin: 6vh 0 2vh 2vw !important;
+    margin: 6dvh 0 2dvh 2vw !important;
     font-size: 4vw !important;
     border-radius: 2vw !important;
-    padding: 1.5vh 2vw !important;
+    padding: 1.5dvh 2vw !important;
 }
 .member-info, .project-info {
     padding: 0 !important;
@@ -2080,19 +2084,19 @@ html {
 }
 .member-name, .project-name {
     font-size: 4.5vw !important;
-    margin: 1.2vh 0 0.8vh 0 !important;
+    margin: 1.2dvh 0 0.8dvh 0 !important;
 }
 .member-bio, .project-desc {
     font-size: 3.8vw !important;
-    margin: 0 0 0.8vh 0 !important;
+    margin: 0 0 0.8dvh 0 !important;
 }
 .member-tags, .project-meta {
     font-size: 3.7vw !important;
-    margin-bottom: 0.8vh !important;
+    margin-bottom: 0.8dvh !important;
 }
 .member-major {
     font-size: 3.8vw !important;
-    margin-bottom: 0.4vh !important;
+    margin-bottom: 0.4dvh !important;
 }
 .qna-list, .qna-item {
     width: 100% !important;
@@ -2101,7 +2105,7 @@ html {
 }
 .qna-head, .qna-answer {
     font-size: 4vw !important;
-    padding: 1vh 0 !important;
+    padding: 1dvh 0 !important;
 }
 .modal-box {
     width: 95vw !important;
@@ -2116,7 +2120,7 @@ html {
 }
 .modal-close {
     font-size: 4vw !important;
-    padding: 2vh 0 !important;
+    padding: 2dvh 0 !important;
     border-radius: 2vw !important;
 }
   /* JS에서 .is-mobile 클래스가 body에 붙을 경우 대응 */
@@ -2139,7 +2143,7 @@ html {
         left: auto;
         z-index: 1002;
         font-size: 7vw;
-        padding: 2vh 4vw;
+        padding: 2dvh 4vw;
         margin-left: auto;
         color: #fff !important;
         background: none;
@@ -2149,17 +2153,17 @@ html {
         align-items: flex-end;
         background: #fff;
         position: absolute;
-        top: calc(2vw + 7vw + 2vh); /* 바로 아래에 나오도록 */
+        top: calc(2vw + 7vw + 2dvh); /* 바로 아래에 나오도록 */
         right: 2vw;
         left: auto;
         width: 14vw;
         min-width: 100px;
         max-width: 260px;
         max-height: 100px;
-        height: 25vh;
+        height: 25dvh;
         opacity: 0;
         pointer-events: none;
-        box-shadow: 0 0.5vh 2vw rgba(0,0,0,0.07);
+        box-shadow: 0 0.5dvh 2vw rgba(0,0,0,0.07);
         border-radius: 0 0 2vw 2vw;
         border-bottom: 0.3vw solid #eee;
         transition: max-height 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s;
@@ -2167,13 +2171,13 @@ html {
     }
     .top-right-nav .nav-links.open {
         max-height: 200px;
-        height: 20vh;
+        height: 20dvh;
         opacity: 1;
         pointer-events: auto;
     }
 .top-right-nav .nav-link {
     width: 100%;
-    padding: 4vh 6vw;
+    padding: 4dvh 6vw;
     font-size: 4vw;
     border-bottom: 0.3vw solid #f2f2f2;
     background: none;
@@ -2203,25 +2207,34 @@ html {
     width: 92vw !important;
     min-width: 80vw !important;
     max-width: 100vw !important;
-    margin: 2vh auto !important;
+    margin: 2dvh auto !important;
     padding: 3vw !important;
     border-radius: 2vw !important;
     font-size: 3.5vw !important;
 }
-.values-heading, .intro-text, .mascot-title, .mascot-outline, .mascot-info-title, .qna-title, .project-title, .member-title {
+ .mascot-title, .mascot-outline, .mascot-info-title, .qna-title, .project-title, .member-title {
     font-size: 5vw !important;
-    margin-top: 2vh !important;
-    margin-bottom: 2vh !important;
+    margin-top: 2dvh !important;
+    margin-bottom: 2dvh !important;
+}
+.intro-text {
+    font-size: 5.5vw !important;
+}
+.values-heading {
+    font-size: 6vw !important;
 }
 .values-label {
     font-size: 3.5vw !important;
 }
 .values-grid .value {
-    font-size: 4vw !important;
-    padding: 2vh 0 !important;
-    margin: 1vh 0 !important;
+    font-size: 5vw !important;
 }
-.inform-deck .value-card {
+.values-grid .value:hover {
+    font-size: 5.1vw !important;
+    color: rgba(255,255,255);
+    transition: transform 0.5s;
+}
+.inform-deck {
     width: 18vw !important;
     height: 18vw !important;
     min-width: 12vw !important;
@@ -2240,12 +2253,12 @@ html {
 .result-input {
     width: 80vw !important;
     font-size: 4vw !important;
-    padding: 2vh 2vw !important;
+    padding: 2dvh 2vw !important;
     border-radius: 2vw !important;
 }
 .result-action, .modal-close {
     font-size: 4vw !important;
-    padding: 2vh 0 !important;
+    padding: 2dvh 0 !important;
     border-radius: 2vw !important;
     width: 40vw !important;
     min-width: 30vw !important;
@@ -2254,11 +2267,79 @@ html {
 .scroll-down-arrow {
     width: 10vw !important;
     height: 10vw !important;
-    margin: 2vh auto !important;
+    margin: 2dvh auto !important;
 }
-.section-gap {
-    height: 4vh !important;
-    min-height: 2vh !important;
-    max-height: 8vh !important;
-}
+.inform-content {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    .inform-copy {
+        position: absolute !important;
+        top: 25vw;
+        right: 4vw;
+        z-index: 2;
+        padding: 2vw 4vw 0 0 !important;
+    }
+    .inform-media {
+        position: absolute !important;
+        top: 120vw;
+        left: 35vw;
+        transform: translate(-50%, -50%);
+        width: 60vw !important;
+        max-width: 80vw !important;
+        z-index: 1;
+        align-items: flex-start !important;
+        justify-content: center !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        gap: 24px !important;
+        align-items: center !important;
+        margin: 0 auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    .inform-heading {
+        margin: 0 0 18px;
+        color: var(--text);
+        font-weight: 700;
+        font-size: 5vw;
+        line-height: 1.25;
+    }
+    .inform-body {
+        margin: 0;
+        max-width: 100vw;
+        color: var(--text);
+        opacity: 0.9;
+        font-size: 3vw;
+        line-height: 1.9;
+        margin-left: auto; /* 중앙 정렬 시 텍스트 블록 폭 중앙 배치 */
+        margin-right: auto;
+    }
+    .inform-deck .value-card.is-left {
+        --baseY: -140px !important;
+    }
+    .inform-deck .value-card.is-right {
+        --baseY: 140px !important;
+    }
+    .inform-deck {
+        width: 92vw !important;
+        max-width: 98vw !important;
+        min-width: 0 !important;
+        height: auto !important;
+        margin: 0 auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    .value-card {
+        width: 50vw !important;
+        max-width: 98vw !important;
+        min-width: 0 !important;
+        height: 25vw !important;
+        max-height: 100vw;
+        min-height: 0;
+        border-radius: 15px !important;
+        object-fit: cover !important;
+    }
 }

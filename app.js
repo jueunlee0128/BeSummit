@@ -947,11 +947,18 @@ function initSectionPins() {
   sections.forEach((sec, i) => {
     // 모든 섹션(1~5)에 pin 적용
     const isInform = sec.id === 'inform-section';
+    // 모바일(767px 미만)에서는 pin 구간을 더 길게
+    let pinEnd;
+    if (window.innerWidth <= 767) {
+      pinEnd = isInform ? '+=500%' : '+=500%'; // 모바일에서 더 길게
+    } else {
+      pinEnd = isInform ? '+=70%' : 'bottom top';
+    }
     const pinTrigger = ScrollTrigger.create({
       id: isInform ? 'inform-pin' : undefined,
       trigger: sec,
       start: 'top top',
-      end: isInform ? '+=70%' : 'bottom top', // inform 섹션만 pin 길이를 조금 줄임
+      end: pinEnd,
       pin: true,
       pinSpacing: true,
       anticipatePin: 1,

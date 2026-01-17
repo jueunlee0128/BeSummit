@@ -1,3 +1,226 @@
+/* award-card 스타일 */
+.award-container {
+  width: calc(100% - 160px);
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: 9.5vw;
+}
+/* 타임라인 전체 컨테이너 */
+.award-timeline {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+/* 중앙 세로선 */
+.timeline-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #C30E23 0%, #fff 100%);
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+/* 카드 배치 영역 */
+.timeline-cards {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+
+.timeline-card-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin: 0;
+  min-height: 220px;
+}
+.timeline-card-wrapper.right {
+  justify-content: flex-end;
+}
+
+/* 카드가 중앙선에서 떨어지도록 */
+.timeline-card-wrapper.left .award-card {
+  margin-left: 10%;
+}
+.timeline-card-wrapper.right .award-card {
+  margin-right: 10%;
+}
+
+/* 타임라인 점(중앙선과 카드 연결) */
+.timeline-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 22px;
+  height: 22px;
+  background: #fff;
+  border: 4px solid #C30E23;
+  border-radius: 50%;
+  z-index: 3;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 2px 8px rgba(195,14,35,0.13);
+}
+/* 카드와 점을 선으로 연결 */
+.timeline-connector {
+  position: absolute;
+  top: 50%;
+  width: 48px;
+  height: 4px;
+  background: #C30E23;
+  z-index: 2;
+}
+.timeline-card-wrapper.left .timeline-connector {
+  left: calc(50% - 48px);
+}
+.timeline-card-wrapper.right .timeline-connector {
+  right: calc(50% - 48px);
+}
+
+
+.award-title {
+  margin: 0 0 32px;
+  color: #FFFFFF;
+  text-align: center;
+  font-weight: 800;
+  font-size: clamp(28px, 4.4vw, 44px);
+  letter-spacing: 0.5px;
+}
+
+.award-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  width: 100%;
+  margin: 0 auto;
+  justify-items: center;
+  align-items: stretch;
+}
+
+.award-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 2vw;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.13);
+  width: 30vw;
+  height: 23vw;
+  aspect-ratio: 16 / 9;
+  transition: transform 0.22s cubic-bezier(0.4,0,0.2,1), box-shadow 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+
+.award-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 32px rgba(195,14,35,0.18), 0 2px 12px rgba(0,0,0,0.13);
+  z-index: 10;
+}
+.award-photo {
+  flex: 0 0 65%;
+  height: 65%;
+  background: #eee;
+  width: 100%;
+}
+
+.award-info {
+  flex: 1 1 35%;
+  background: #fff;
+  padding: 16px 18px 12px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 35%;
+  box-sizing: border-box;
+}
+
+.award-meta-date-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 1.02em;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.award-meta {
+  color: #C30E23;
+  font-weight: 700;
+}
+
+.award-date {
+  color: #888;
+  font-size: 0.98em;
+  font-weight: 500;
+}
+
+.award-name {
+  font-size: 1.13em;
+  font-weight: 800;
+  color: #222;
+  margin: 2px 0 4px 0;
+}
+
+.award-desc {
+  font-size: 0.98em;
+  color: #444;
+  opacity: 0.85;
+  margin: 0;
+}
+
+.award-filters {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: flex-start;
+    margin: 0 0 22px;
+}
+.award-chip {
+    border: none;
+    outline: none;
+    padding: 10px 18px;
+    border-radius: 1000px;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.13);
+}
+.award-chip.active {
+    background: var(--primary, #C30E23);
+    color: #fff;
+    border: none;
+    box-shadow: 0 8px 18px rgba(195, 14, 35, 0.35);
+    transform: translateY(-2px);
+}
+.timeline-card-wrapper.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.timeline-card-wrapper.fade-in {
+  opacity: 1;
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.award-empty-message.fade-in {
+  opacity: 1;
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .pr {
     position:fixed;
     display: flex;
@@ -260,6 +483,19 @@ body.project-detail-mode {
     min-height: 100vh;
     overflow-y: auto;
     box-sizing: border-box;
+}
+.award-container {
+    width: calc(100% - 160px);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.member-title {
+    margin: 0 0 32px;
+    color: #FFFFFF;
+    text-align: center;
+    font-weight: 800;
+    font-size: clamp(28px, 4.4vw, 44px);
+    letter-spacing: 0.5px;
 }
 /* 프로젝트 카드 그리드 (멤버 카드 스타일 참고) */
 .project-container {
@@ -2651,4 +2887,193 @@ html {
 .project-detail-members-row {
     overflow: visible !important;
 }
+}
+
+@media screen and (max-width: 767px) {
+  .award-container {
+    width: 96vw !important;
+    max-width: 100vw !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+    padding-top: 23vw !important;
+    align-items: center;
+  }
+
+  .award-title {
+    font-size: 5vw !important;
+    margin-bottom: 3vw !important;
+    text-align: center !important;
+    letter-spacing: 0.5vw !important;
+  }
+
+  .award-filters {
+    max-width: 100% !important;
+    width: 100vw !important;
+    gap: 2vw !important;
+    margin-bottom: 5vw !important;
+    justify-content: flex-start !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  .award-chip {
+    font-size: 2.5vw !important;
+    padding: 1.5vw 3.5vw !important;
+    border-radius: 100vw !important;
+  }
+
+  .award-timeline {
+    position: relative !important;
+    width: 100vw !important;
+    min-height: 80dvh !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  .timeline-line {
+    position: absolute !important;
+    left: 50% !important;
+    top: 0 !important;
+    width: 0.6vw !important;
+    height: 100% !important;
+    background: linear-gradient(180deg, #C30E23 0%, #fff 100%) !important;
+    transform: translateX(-50%) !important;
+    z-index: 1 !important;
+  }
+
+  .timeline-cards {
+    position: relative !important;
+    width: 100vw !important;
+    min-height: 80dvh !important;
+    padding: 0 !important;
+  }
+
+  .timeline-card-wrapper {
+    position: relative !important;
+    width: 100vw !important;
+    min-height: 32vw !important;
+    margin: 6vw 0 !important;
+    display: flex !important;
+  }
+  .timeline-card-wrapper.left .award-card {
+    margin-left: 2vw !important;
+  }
+  .timeline-card-wrapper.right .award-card {
+    margin-right: 2vw !important;
+  }
+
+  .timeline-connector {
+    position: absolute !important;
+    top: 50% !important;
+    width: 8vw !important;
+    height: 0.7vw !important;
+    background: #C30E23 !important;
+    z-index: 2 !important;
+    transform: translateY(-50%) !important;
+  }
+
+  .timeline-dot {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 4vw !important;
+    height: 4vw !important;
+    background: #fff !important;
+    border: 0.7vw solid #C30E23 !important;
+    border-radius: 100vw !important;
+    z-index: 3 !important;
+    transform: translate(-50%, -50%) !important;
+    box-shadow: 0 1vw 2vw rgba(195,14,35,0.13) !important;
+  }
+
+  .award-card {
+    width: 40vw !important;
+    height: 30vw !important;
+    max-width: 90vw !important;
+    min-width: 0 !important;
+    aspect-ratio: 16 / 9 !important;
+    border-radius: 2vw !important;
+    box-shadow: 0 2vw 8vw rgba(0,0,0,0.13) !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    background: #fff !important;
+    transition: transform 0.22s cubic-bezier(0.4,0,0.2,1), box-shadow 0.22s cubic-bezier(0.4,0,0.2,1) !important;
+    z-index: 9999 !important;
+  }
+  .award-card:hover {
+    transform: translateY(-2vw) scale(1.03) !important;
+    box-shadow: 0 4vw 12vw rgba(195,14,35,0.18), 0 1vw 4vw rgba(0,0,0,0.13) !important;
+    z-index: 10 !important;
+  }
+  .award-photo {
+    width: 100% !important;
+    height: 65% !important;
+    min-height: 0 !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+  .award-photo img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+  }
+  .award-info {
+    flex: 1 1 35% !important;
+    background: #fff !important;
+    padding: 1vw 1vw 1vw 1vw !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    height: 35% !important;
+    box-sizing: border-box !important;
+  }
+  .award-meta-date-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-size: 1.02em;
+    font-weight: 700;
+    margin: 0 !important;
+  }
+  .award-meta {
+    color: #C30E23 !important;
+    font-weight: 700 !important;
+    font-size: 1vw !important;
+  }
+  .award-date {
+    color: #888 !important;
+    font-size: 1vw !important;
+    font-weight: 500 !important;
+  }
+  .award-name {
+    font-size: 2vw !important;
+    font-weight: 800 !important;
+    color: #222 !important;
+    margin: 1vw 0 1vw 0 !important;
+  }
+  .award-desc {
+    font-size: 1.5vw !important;
+    color: #444 !important;
+    opacity: 0.85 !important;
+    margin: 0 !important;
+  }
+  .award-empty-message {
+    text-align: center !important;
+    color: #fff !important;
+    font-size: 5vw !important;
+    font-weight: 700 !important;
+    padding: 20vw 0 10vw 0 !important;
+    opacity: 0.85 !important;
+    letter-spacing: -0.01em !important;
+    background: none !important;
+    border-radius: 4vw !important;
+    transition: opacity 0.4s cubic-bezier(0.4,0,0.2,1) !important;
+  }
 }

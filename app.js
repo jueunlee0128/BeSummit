@@ -6,10 +6,156 @@ const prSections = [
   'values-section',
   'inform-section',
   'mascot-section',
+  'award-section',
   'project-section',
   'member-section',
   'qna-section',
 ];
+function updateAwardScrollPadding() {
+  const timelineLine = document.querySelector('.timeline-line');
+  if (!timelineLine) return;
+  const lineRect = timelineLine.getBoundingClientRect();
+  const lineHeight = lineRect.height;
+  if (lineHeight > 0) {
+    // 중앙선 높이 + 20vh
+    const vh = Math.ceil(lineHeight / window.innerHeight * 100) + 60;
+    document.body.style.minHeight = `${vh}vh`;
+  }
+}
+let selectedAwardYear = '전체';
+
+function renderAwardChips() {
+  const chipTemplate = document.getElementById('award-chip-template');
+  const chipContainer = document.querySelector('.award-filters');
+  if (!chipTemplate || !chipContainer) return;
+
+  // 칩 목록을 고정으로 지정
+  const years = ['전체', '2026년', '2025년'];
+
+  chipContainer.innerHTML = '';
+  years.forEach(year => {
+    const chipNode = chipTemplate.content.cloneNode(true);
+    const chipBtn = chipNode.querySelector('.award-chip');
+    chipBtn.textContent = year;
+    chipBtn.classList.toggle('active', year === selectedAwardYear);
+    chipBtn.addEventListener('click', () => {
+      if (selectedAwardYear === year) return;
+      selectedAwardYear = year;
+      renderAwardChips();
+      renderAwardCards();
+    });
+    chipContainer.appendChild(chipBtn);
+  });
+}
+
+function renderAwardCards() {
+  const timeline = document.querySelector('.timeline-cards');
+  const template = document.getElementById('award-card-template');
+  if (!timeline || !template) return;
+
+  // 1. 기존 카드 fade-out
+  const oldCards = Array.from(timeline.children);
+  oldCards.forEach(card => {
+    card.classList.add('fade-out');
+  });
+
+  // 2. 트랜지션 후 기존 카드 삭제 & 새 카드 fade-in
+  setTimeout(() => {
+    timeline.innerHTML = '';
+
+    // 날짜 내림차순 정렬 (최신순)
+    const parseKoreanDate = (str) => {
+      if (!str) return new Date(0);
+      const m = str.match(/(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/);
+      if (!m) return new Date(0);
+      const [_, y, mo, d] = m;
+      return new Date(`${y}-${mo.padStart(2, '0')}-${d.padStart(2, '0')}`);
+    };
+
+    // 필터링
+    let filtered = AWARDS.slice();
+    if (selectedAwardYear !== '전체') {
+      filtered = filtered.filter(a => {
+        const m = (a.date || '').match(/(\d{4})년/);
+        return m && `${m[1]}년` === selectedAwardYear;
+      });
+    }
+
+    // 정렬
+    filtered.sort((a, b) => {
+      const dateA = parseKoreanDate(a.date);
+      const dateB = parseKoreanDate(b.date);
+      return dateB - dateA;
+    });
+
+    if (filtered.length === 0 && selectedAwardYear !== '전체') {
+      const msg = document.createElement('div');
+      msg.className = 'award-empty-message fade-in';
+      msg.textContent = `${selectedAwardYear}의 SUMMIT을 기대해주세요!`;
+      timeline.appendChild(msg);
+      setTimeout(() => msg.classList.remove('fade-in'), 300);
+      return;
+    }
+
+    filtered.forEach((data, i) => {
+      const node = template.content.cloneNode(true);
+      const card = node.querySelector('.award-card');
+      // 이미지
+      const photoDiv = card.querySelector('.award-photo');
+      if (photoDiv && data.image) {
+        photoDiv.style.backgroundImage = `url('${data.image}')`;
+        photoDiv.style.backgroundSize = 'cover';
+        photoDiv.style.backgroundPosition = 'center';
+      }
+      card.querySelector('.award-meta').textContent = data.badge || '';
+      card.querySelector('.award-date').textContent = data.date || '';
+      card.querySelector('.award-name').textContent = data.title || '';
+      card.querySelector('.award-desc').textContent = data.desc || '';
+
+      // 카드 wrapper (왼쪽/오른쪽)
+      const wrapper = document.createElement('div');
+      wrapper.className = 'timeline-card-wrapper ' + (i % 2 === 0 ? 'left' : 'right');
+
+      // fade-in 효과
+      wrapper.classList.add('fade-in');
+
+      // 중앙선 점
+      const dot = document.createElement('div');
+      dot.className = 'timeline-dot';
+
+      // 카드-중앙선 연결선
+      const connector = document.createElement('div');
+      connector.className = 'timeline-connector';
+
+      wrapper.appendChild(card);
+      wrapper.appendChild(connector);
+      wrapper.appendChild(dot);
+
+      timeline.appendChild(wrapper);
+
+      // fade-in 해제 (애니메이션 후)
+      setTimeout(() => wrapper.classList.remove('fade-in'), 500);
+    });
+
+    // 카드 렌더 후 중앙선 높이로 스크롤 패딩 맞춤
+    setTimeout(updateAwardScrollPadding, 50);
+  }, 300); // 기존 카드 트랜지션 시간과 동일하게
+}
+let AWARDS = [];
+
+// 데이터 불러온 뒤 칩도 렌더링
+async function loadAwards() {
+  const colRef = collection(db, 'awards');
+  const snapshot = await getDocs(colRef);
+  AWARDS = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  renderAwardChips();
+  renderAwardCards();
+}
+
+// DOMContentLoaded에서 호출
+document.addEventListener('DOMContentLoaded', () => {
+  loadAwards();
+});
 
 function updatePrBarVisibility() {
   let show = false;
@@ -1464,6 +1610,7 @@ function showSection(sectionName) {
             document.body.classList.add('project-mode');
             document.body.classList.remove('qna-mode');
             document.body.classList.remove('member-mode');
+            document.body.classList.remove('award-mode');
             // 프로젝트 탭은 카드 개수에 따라 스크롤 여유를 동적으로 계산
             updateProjectScrollPadding();
             // 리사이즈 시에도 재계산 (중복 등록 방지)
@@ -1477,6 +1624,44 @@ function showSection(sectionName) {
               });
             }
             // 프로젝트 세부 탭에서도 상단 텍스트(로고, 네비) 항상 표시
+            const topLeftLogo = document.querySelector('.top-left-logo');
+            const topRightNav = document.querySelector('.top-right-nav');
+            if (topLeftLogo) topLeftLogo.style.display = 'block';
+            if (topRightNav) topRightNav.style.display = 'flex';
+        } else if (sectionName === 'award') {
+            document.body.classList.add('award-mode');
+            document.body.classList.remove('qna-mode');
+            document.body.classList.remove('member-mode');
+            document.body.classList.remove('project-mode');
+            // 수상경력 탭은 컨텐츠 높이에 따라 스크롤 여유를 동적으로 계산
+            const awardSection = document.getElementById('award-section');
+            if (awardSection) {
+              const sectionRect = awardSection.getBoundingClientRect();
+              const actualHeight = sectionRect.height;
+              const actualVh = Math.max(200, Math.ceil(actualHeight / window.innerHeight * 100));
+              document.body.style.minHeight = `${actualVh}vh`;
+            } else {
+              document.body.style.minHeight = '200vh';
+            }
+            // 리사이즈 시에도 재계산 (중복 등록 방지)
+            if (!window.__awardResizeBound) {
+              window.__awardResizeBound = true;
+              window.addEventListener('resize', () => {
+                if (__currentTab === 'award') {
+                  const awardSection = document.getElementById('award-section');
+                  if (awardSection) {
+                    const sectionRect = awardSection.getBoundingClientRect();
+                    const actualHeight = sectionRect.height;
+                    const actualVh = Math.max(200, Math.ceil(actualHeight / window.innerHeight * 100));
+                    document.body.style.minHeight = `${actualVh}vh`;
+                  } else {
+                    document.body.style.minHeight = '200vh';
+                  }
+                  updateLenisScrollRange();
+                }
+              });
+            }
+            // 상단 텍스트(로고, 네비) 항상 표시
             const topLeftLogo = document.querySelector('.top-left-logo');
             const topRightNav = document.querySelector('.top-right-nav');
             if (topLeftLogo) topLeftLogo.style.display = 'block';

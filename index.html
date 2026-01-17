@@ -39,6 +39,7 @@
                 <div class="nav-links">
                     <a href="#" class="nav-link active" data-section="home">홈</a>
                     <a href="#" class="nav-link" data-section="project">프로젝트</a>
+                    <a href="#" class="nav-link" data-section="award">수상경력</a>
                     <a href="#" class="nav-link" data-section="member">멤버</a>
                     <a href="#" class="nav-link" data-section="qna">QnA</a>
                 </div>
@@ -154,6 +155,34 @@
                         <div class="project-meta"></div>
                         <p class="project-name"></p>
                         <p class="project-desc"></p>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+    
+    <!-- 수상경력 섹션 -->
+    <div class="content section award" id="award-section" style="display: none;">
+        <div class="award-container">
+            <h2 class="award-title">수상경력</h2>
+            <div class="award-filters"></div>
+            <div class="award-timeline">
+                <div class="timeline-line"></div>
+                <div class="timeline-cards"></div>
+            </div>
+            <template id="award-chip-template">
+                <button class="award-chip" type="button"></button>
+            </template>
+            <template id="award-card-template">
+                <div class="award-card">
+                    <div class="award-photo"></div>
+                    <div class="award-info">
+                        <div class="award-meta-date-row">
+                            <span class="award-meta"></span>
+                            <span class="award-date"></span>
+                        </div>
+                        <p class="award-name"></p>
+                        <p class="award-desc"></p>
                     </div>
                 </div>
             </template>

@@ -1,3 +1,31 @@
+// ===== PR(카피라이트 바) 표시 제어 =====
+const prBar = document.querySelector('.pr');
+const prSections = [
+  'home-section',
+  'intro-section',
+  'values-section',
+  'inform-section',
+  'mascot-section',
+  'project-section',
+  'member-section',
+  'qna-section',
+];
+
+function updatePrBarVisibility() {
+  let show = false;
+  for (const id of prSections) {
+    const el = document.getElementById(id);
+    if (el && el.style.display !== 'none') {
+      show = true;
+      break;
+    }
+  }
+  if (prBar) prBar.style.display = show ? 'flex' : 'none';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setInterval(updatePrBarVisibility, 100);
+});
 // ===== 모바일 햄버거 메뉴: 767px 이하에서 네비게이션 토글 =====
 function setupMobileHamburgerMenu() {
   const nav = document.querySelector('nav.top-right-nav');

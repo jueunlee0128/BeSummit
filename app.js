@@ -50,6 +50,7 @@ function renderAwardChips() {
 
 function renderAwardCards() {
   const timeline = document.querySelector('.timeline-cards');
+  const timelineLine = document.querySelector('.timeline-line');
   const template = document.getElementById('award-card-template');
   if (!timeline || !template) return;
 
@@ -88,13 +89,17 @@ function renderAwardCards() {
       return dateB - dateA;
     });
 
+    // 수상경력 없을 때 중앙선 숨기고 메시지만 표시
     if (filtered.length === 0 && selectedAwardYear !== '전체') {
+      if (timelineLine) timelineLine.style.display = 'none';
       const msg = document.createElement('div');
       msg.className = 'award-empty-message fade-in';
       msg.textContent = `${selectedAwardYear}의 SUMMIT을 기대해주세요!`;
       timeline.appendChild(msg);
       setTimeout(() => msg.classList.remove('fade-in'), 300);
       return;
+    } else {
+      if (timelineLine) timelineLine.style.display = '';
     }
 
     filtered.forEach((data, i) => {
@@ -133,13 +138,11 @@ function renderAwardCards() {
 
       timeline.appendChild(wrapper);
 
-      // fade-in 해제 (애니메이션 후)
       setTimeout(() => wrapper.classList.remove('fade-in'), 500);
     });
 
-    // 카드 렌더 후 중앙선 높이로 스크롤 패딩 맞춤
     setTimeout(updateAwardScrollPadding, 50);
-  }, 300); // 기존 카드 트랜지션 시간과 동일하게
+  }, 300);
 }
 let AWARDS = [];
 

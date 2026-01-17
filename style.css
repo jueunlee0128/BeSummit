@@ -1899,7 +1899,6 @@ html {
     overflow: hidden;
 }
 
-
 /* 반응형 대응: 데스크탑 스타일은 그대로 두고, 파일 하단에 max-width: 767px 미디어 쿼리로 주요 레이아웃, 이미지, 여백, 폰트, 버튼, 그리드, 섹션, 멤버/프로젝트 카드 등 모바일 최적화 오버라이드 추가. (JS에서 .is-mobile 클래스도 대응) */
 @media screen and (max-width: 767px) {
   html, body {
@@ -1999,34 +1998,41 @@ html {
 .project-photo {
     width: 88vw !important;
     height: 49.5vw !important;
-    min-width: 18vw !important;
-    min-height: 18vw !important;
-    border-radius: 10px !important;
+    border-radius: 2vw !important;
     margin: 0 auto 0 auto !important;
 }
 .member-photo {
-    width: 24vw !important;
-    height: 24vw !important;
+    width: 60vw !important;
+    height: 60vw !important;
     min-width: 18vw !important;
     min-height: 18vw !important;
-    max-width: 32vw !important;
-    max-height: 32vw !important;
     border-radius: 10px !important;
     margin: 0 auto 2vw auto !important;
 }
 .project-image, .member-image {
     max-width: 100% !important;
-    height: auto !important;
+    height: 100% !important;
     border-radius: 2vw !important;
+    object-fit: cover !important;
 }
-
-.project-detail-box {
-    width: 92vw !important;
+#project-detail-section .project-detail-box {
+    background: #222;
+    border-radius: 3vw;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+    padding: 48px 32px;
+    min-height: 49.5vw !important;
+    margin: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: #fff;
+    font-size: 1.3em;
+    display: block;
+    overflow: hidden;
+    position: relative;
+    padding: 0;
+    width: 88vw !important;
     min-width: 80vw !important;
     max-width: 100vw !important;
-    padding: 3vw 1vw !important;
-    border-radius: 2vw !important;
-    margin: 0 auto 2vw auto !important;
     box-sizing: border-box;
 }
 
@@ -2057,20 +2063,32 @@ html {
     width: 9vw !important;
     height: 9vw !important;
 }
-.project-detail-year, .project-detail-title, .project-detail-desc {
+.project-detail-year {
     font-size: 4vw !important;
-    padding: 1dvh 0 !important;
+    margin: 0 !important;
+    margin-bottom: 1dvh !important;
+    padding: 0 !important;
+    background-color: rgba(0,0,0,0)
+}
+.project-detail-title {
+    font-size: 6vw !important;
+    margin-bottom: 0.5dvh !important;
+}
+.project-detail-desc {
+    font-size: 4vw !important;
+    margin-bottom: 0.5dvh !important;
 }
 .project-detail-members-row {
-    flex-direction: column !important;
+    flex-direction: row !important;
     gap: 1vw !important;
 }
 .project-detail-member {
-    font-size: 3.8vw !important;
-    padding: 0.5dvh 0 !important;
+    font-size: 3vw !important;
+    padding: 0.5dvh 0.5dvh !important;
+    border: 0.3vw solid white;
 }
 .project-detail-back {
-    margin: 6dvh 0 2dvh 2vw !important;
+    margin: 10dvh 0 2dvh 2vw !important;
     font-size: 4vw !important;
     border-radius: 2vw !important;
     padding: 1.5dvh 2vw !important;
@@ -2080,17 +2098,49 @@ html {
     margin: 0 !important;
     font-size: 4vw !important;
 }
-.member-name, .project-name {
+.member-name {
     font-size: 4.5vw !important;
     margin: 1.2dvh 0 0.8dvh 0 !important;
 }
-.member-bio, .project-desc {
+.project-name {
+    font-size: 4.5vw !important;
+}
+.member-bio {
     font-size: 3.8vw !important;
     margin: 0 0 0.8dvh 0 !important;
 }
-.member-tags, .project-meta {
+.project-desc {
+    font-size: 3.8vw !important;
+}
+.member-tags {
     font-size: 3.7vw !important;
     margin-bottom: 0.8dvh !important;
+}
+.member-tag {
+    padding: 2vw 4vw;
+    border-radius: 1000px;
+    font-weight: 800;
+    font-size: 2.5vw;
+    color: #cfc9c9;
+    background: linear-gradient(180deg, rgba(72,72,74,0.65) 0%, rgba(56,56,58,0.58) 100%);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.35);
+    /* 빛나는 효과 추가 */
+    box-shadow: 0 0 10px 4px rgba(255,255,255,0.18), 0 14px 26px rgba(0,0,0,0.35);
+    position: relative;
+    z-index: 1;
+}
+.member-tag.lead {
+    color: #FFFFFF;
+    background: var(--primary);
+    border: none;
+    box-shadow: 0 0 8px 6px rgba(195, 14, 35, 0.38), 0 6px 16px rgba(195, 14, 35, 0.35);
+    /* 리드 태그는 더 강한 빛 효과 */
+    position: relative;
+    z-index: 2;
+}
+.project-meta {
+    font-size: 3.7vw !important;
 }
 .member-major {
     font-size: 3.8vw !important;
@@ -2100,26 +2150,26 @@ html {
     width: 100% !important;
     padding: 0 !important;
     font-size: 4vw !important;
+    justify-content: center;
 }
-.qna-head, .qna-answer {
+.qna-head {
     font-size: 4vw !important;
-    padding: 1dvh 0 !important;
+    padding: 2vw 0 0 3vw !important;
+}
+.qna-answer {
+    font-size: 4vw !important;
+    padding: 2vw 2vw 2vw 3vw !important;
 }
 .modal-box {
-    width: 95vw !important;
+    width: 85vw !important;
     min-width: 0 !important;
-    max-width: 98vw !important;
+    max-width: 500px !important;
     padding: 4vw 2vw !important;
     border-radius: 2vw !important;
 }
 .modal-message {
     font-size: 4vw !important;
     padding: 0 !important;
-}
-.modal-close {
-    font-size: 4vw !important;
-    padding: 2dvh 0 !important;
-    border-radius: 2vw !important;
 }
   /* JS에서 .is-mobile 클래스가 body에 붙을 경우 대응 */
   body.is-mobile .content, body.is-mobile .section, body.is-mobile .center-content {
@@ -2146,42 +2196,7 @@ html {
         color: #fff !important;
         background: none;
     }
-    .top-right-nav .nav-links {
-        flex-direction: column;
-        align-items: flex-end;
-        background: #fff;
-        position: absolute;
-        top: calc(2vw + 7vw + 2dvh); /* 바로 아래에 나오도록 */
-        right: 2vw;
-        left: auto;
-        width: 4vw;
-        min-width: 90px;
-        max-width: 260px;
-        max-height: 50px !important;
-        height: 25dvh;
-        opacity: 0;
-        pointer-events: none;
-        box-shadow: 0 0.5dvh 2vw rgba(0,0,0,0.07);
-        border-radius: 0 0 2vw 2vw;
-        border-bottom: 0.3vw solid #eee;
-        transition: max-height 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s;
-        overflow: hidden;
-    }
-    .top-right-nav .nav-links.open {
-        max-height: 100dvh !important;
-        height: 20dvh !important;
-        opacity: 1;
-        pointer-events: auto;
-    }
-.top-right-nav .nav-link {
-    width: 100%;
-    font-size: 2vw;
-    border-bottom: 0.3vw solid #f2f2f2;
-    background: none;
-    text-align: right;
-    justify-content: center;
-    display: flex;
-}
+    
 /* 예시: 주요 섹션, 버튼, 카드 등 모바일에서 비율 단위로 */
 .content, .section, .center-content, .project-container, .member-container {
     width: 100vw !important;
@@ -2239,27 +2254,81 @@ html {
     max-width: 24vw !important;
     max-height: 24vw !important;
 }
-.result-card, .result-status-box {
-    width: 92vw !important;
-    min-width: 80vw !important;
-    max-width: 100vw !important;
+.result-card {
+    width: 75vw !important;
     padding: 4vw !important;
-    border-radius: 2vw !important;
+    border-radius: 10vw !important;
     font-size: 3.5vw !important;
+    justify-content: center;
+    align-items: center;
+}
+.result-row {
+    align-items: center !important; /* 세로 중앙 */
+    justify-content: center !important;
+    margin-left: 12vw !important;
+    gap: 0 !important; /* 레이블-입력 간격 제거 */
+    min-height: 56px !important; /* 행 높이 확보로 중앙 정렬 감 강화 */
+    width: 50% !important; /* 행은 카드 전체 폭을 사용 (내부 그리드는 우측 정렬) */
 }
 .result-input {
-    width: 80vw !important;
-    font-size: 4vw !important;
+    width: 50vw !important;
+    font-size: 3vw !important;
     padding: 2dvh 2vw !important;
     border-radius: 2vw !important;
 }
-.result-action, .modal-close {
-    font-size: 4vw !important;
+.result-action {
+    font-size: 3vw !important;
+    border-radius: 2vw !important;
+    width: 25vw !important;
+    min-width: 25vw !important;
+    max-width: 30vw !important;
+    height: 12vw !important;
+}
+.result-status-box {
+    width: 80vw !important;
+    min-width: 80vw !important;
+    max-width: 100vw !important;
+    border-radius: 2vw !important;
+    font-size: 3.5vw !important;
+    margin: 0 !important;
+    text-align: center !important;
+}
+.result-status-title {
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 18px;
+    letter-spacing: 0.02em;
+}
+.result-status-name {
+    font-size: 1rem;
+    color: #fff;
+    margin-bottom: 14px;
+}
+.result-status-name .accent {
+    color: #D61F26;
+    font-weight: 700;
+}
+.result-status-desc {
+    font-size: 0.8rem;
+    color: #f3f3f3;
+    margin-bottom: 18px;
+    line-height: 1.6;
+}
+.result-status-footer {
+    font-size: 0.8rem;
+    color: #BC7F88;
+    opacity: 0.85;
+    margin-top: 10px;
+    font-weight: 600;
+}
+.modal-close {
+    font-size: 3.5vw !important;
     padding: 2dvh 0 !important;
     border-radius: 2vw !important;
     width: 40vw !important;
-    min-width: 30vw !important;
-    max-width: 60vw !important;
+    min-width: 20vw !important;
+    max-width: 30vw !important;
 }
 .scroll-down-arrow {
     width: 10vw !important;
@@ -2280,7 +2349,7 @@ html {
     }
     .inform-media {
         position: absolute !important;
-        top: 110vw;
+        top: 120vw;
         left: 35vw;
         transform: translate(-50%, -50%);
         width: 60vw !important;
@@ -2411,20 +2480,19 @@ html {
     line-height: 1.9;
     color: rgba(255,255,255,0.92);
 }
+.project-detail-arrow:hover .arrow-svg {
+    transform: scale(1.15);
+    transition: transform 0.18s cubic-bezier(0.4,0,0.2,1);
 }
-
-@media screen and (min-width: 768px) {
-  .inform-copy::before,
-  .inform-copy::after {
-    width: 48px;
-    height: 48px;
-    filter: blur(18px);
-    box-shadow: 0 0 120px 48px rgba(255,255,255,0.22);
-  }
+.arrow-svg {
+    display: block;
+    width: 4vw;
+    height: 4vw;
+    transition: transform 0.18s cubic-bezier(0.4,0,0.2,1);
+}
 }
 @media screen and (max-width: 767px) {
-  .top-right-nav .nav-links,
-  .top-right-nav .nav-links.open {
+  .top-right-nav .nav-links {
     position: absolute !important;
     top: 15vw !important; /* 헤더 높이만큼 아래로 */
     right: 2vw !important;
@@ -2436,7 +2504,42 @@ html {
     width: 20vw !important;
     min-width: 60px !important;
     max-width: 80px !important;
+    height: 0 !important;
+    max-height: none !important;
+    padding: 20px 0 16px 0 !important; /* 위아래 여백 */
+    opacity: 0 !important;
+    visibility: hidden;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s, visibility 0.3s;
+    pointer-events: auto !important;
+    overflow: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    gap: 0 !important;
+    flex-direction: column;
+    align-items: flex-end;
+    pointer-events: none;
+    transition: max-height 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s;
+    overflow: hidden;
+  }
+  .top-right-nav .nav-links.open {
+    position: absolute !important;
+    top: 15vw !important; /* 헤더 높이만큼 아래로 */
+    right: 2vw !important;
+    left: auto !important;
+    z-index: 9999 !important; /* 항상 맨 위로 */
+    background: #fff !important;
+    box-shadow: 0 0.5dvh 2vw rgba(0,0,0,0.07);
+    border-radius: 0 0 2vw 2vw;
+    width: 20vw !important;
+    min-width: 60px !important;
+    max-width: 140px !important;
     height: auto !important;
+    opacity: 1;
+    visibility: visible;
+    overflow: visible;
+    transition: max-height 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s, visibility 0.3s;
     max-height: none !important;
     padding: 20px 0 16px 0 !important; /* 위아래 여백 */
     opacity: 1 !important;
@@ -2446,6 +2549,7 @@ html {
     flex-direction: column !important;
     align-items: flex-end !important;
     gap: 0 !important;
+    pointer-events: auto;
   }
   .top-right-nav .nav-link {
     font-size: 2.5vw !important;
@@ -2455,5 +2559,78 @@ html {
     box-sizing: border-box !important;
     line-height: 1.3 !important;
     border-bottom: none !important;
+    width: 100%;
+    font-size: 2vw;
+    border-bottom: 0.3vw solid #f2f2f2;
+    background: none;
+    text-align: right;
+    justify-content: center;
+    display: flex;
   }
+  #result-wrap-v2 {
+    max-width: 840px !important;
+    width: 100vw !important;
+    display: flex !important; 
+    flex-direction: column !important;
+    margin-top: 15% !important;
+}
+.result-wrap {
+    max-width: 840px !important;
+    width: 100vw !important;
+    display: flex !important; 
+    flex-direction: column !important;
+    margin-top: -15% !important;
+}
+#result-hero-v2 {
+    margin-bottom: 5vw !important;
+}
+  .result-hero .result-logo {
+    max-width: 300px;
+    max-height: 500px;
+    width: auto;
+    height: auto;
+  }
+  .result-hero .result-subtitle {
+    color: #C30E23; /* 요청한 텍스트 색상 */
+    font-weight: 700;
+    font-size: clamp(18px, 3.2vw, 28px);
+  }
+  #resultFailMessage .fail-main {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 400;
+    margin-bottom: 1.6em;
+}
+#resultFailMessage .fail-red {
+    color: #C30E23;
+    font-weight: 700;
+}
+#resultFailMessage .fail-sub {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 400;
+    margin-bottom: 1.2em;
+}
+#resultFailCard.result-card {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+}
+
+@media screen and (min-width: 768px) {
+  .inform-copy::before,
+  .inform-copy::after {
+    width: 48px;
+    height: 48px;
+    filter: blur(18px);
+    box-shadow: 0 0 120px 48px rgba(255,255,255,0.22);
+  }
+  
+  /* 내부 요소 잘림 방지 */
+.project-detail-info-box {
+    overflow: visible !important;
+}
+.project-detail-members-row {
+    overflow: visible !important;
+}
 }

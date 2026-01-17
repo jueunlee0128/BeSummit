@@ -2602,7 +2602,7 @@ function updateDetailScrollPadding() {
     document.body.scrollHeight,
     document.documentElement.scrollHeight
   );
-  const bodyScrollVh = Math.ceil(bodyScrollHeight / window.innerHeight * 100);
+  const bodyScrollVh = Math.ceil(bodyScrollHeight / window.innerHeight * 10);
   
   // 최소 100vh 이상, 컨텐츠가 더 크면 그만큼 (실제 스크롤 높이도 고려)
   const vh = Math.max(100, Math.ceil(totalHeight / window.innerHeight * 100), bodyScrollVh);
@@ -2610,5 +2610,9 @@ function updateDetailScrollPadding() {
   // 프로젝트 세부 탭 모드일 때만 min-height 설정 (다른 탭들과 동일)
   if (document.body.classList.contains('project-detail-mode')) {
     document.body.style.minHeight = `${vh}vh`;
+    // Lenis 스크롤 범위 강제 업데이트
+    setTimeout(() => {
+      if (typeof updateLenisScrollRange === 'function') updateLenisScrollRange();
+    }, 50);
   }
 }

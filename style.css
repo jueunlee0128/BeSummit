@@ -2265,7 +2265,7 @@ html {
 }
 .project-photo {
     width: 88vw !important;
-    height: 49.5vw !important;
+    height: 49.5dvh !important;
     border-radius: 2vw !important;
     margin: 0 auto 0 auto !important;
 }
@@ -2983,6 +2983,14 @@ html {
     background: #C30E23 !important;
     z-index: 2 !important;
     transform: translateY(-50%) !important;
+  }
+  .timeline-card-wrapper.left .timeline-connector {
+    left: 15vw !important;   /* 왼쪽으로 더 길게 */
+    width: 36vw !important;
+  }
+  .timeline-card-wrapper.right .timeline-connector {
+    right: 15vw !important;  /* 오른쪽으로 더 길게 */
+    width: 36vw !important;
   }
 
   .timeline-dot {

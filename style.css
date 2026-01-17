@@ -3019,7 +3019,7 @@ html {
 
   .award-card {
     width: 40vw !important;
-    height: 30vw !important;
+    height: 32vw !important;
     max-width: 90vw !important;
     min-width: 0 !important;
     aspect-ratio: 16 / 9 !important;
@@ -3077,11 +3077,11 @@ html {
   .award-meta {
     color: #C30E23 !important;
     font-weight: 700 !important;
-    font-size: 1vw !important;
+    font-size: 1.5vw !important;
   }
   .award-date {
     color: #888 !important;
-    font-size: 1vw !important;
+    font-size: 1.5vw !important;
     font-weight: 500 !important;
   }
   .award-name {

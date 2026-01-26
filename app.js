@@ -2019,8 +2019,8 @@ function updateLoading() {
 
 let MEMBERS = [];
 
-let __memberActiveFilter = null; // 선택된 필터 id (null이면 전체)
-
+// 1기가 먼저 선택되도록 기본값 '1기'로 설정
+let __memberActiveFilter = '1기';
 async function loadMembers() {
   const colRef = collection(db, 'members');
   const snapshot = await getDocs(colRef);
@@ -2035,28 +2035,33 @@ function renderMemberFilters() {
   const tpl = document.getElementById('member-chip-template');
   if (!wrap || !tpl) return;
 
-  // tags에서 필터 목록 추출
+
+  // tags에서 필터 목록 추출 (1기, 2기 칩 강제 추가, 숫자 내림차순 정렬)
   const tagSet = new Set();
   MEMBERS.forEach(m => (m.tags || []).forEach(tag => tagSet.add(tag)));
-  let filters = Array.from(tagSet).map(tag => ({
+  let filters = Array.from(tagSet);
+  if (!filters.includes('1기')) filters.push('1기');
+  if (!filters.includes('2기')) filters.push('2기');
+  // 숫자 내림차순 정렬 (2기, 1기, 그 외)
+  filters = filters.sort((a, b) => {
+    const numA = parseInt(a);
+    const numB = parseInt(b);
+    if (!isNaN(numA) && !isNaN(numB)) return numB - numA;
+    if (!isNaN(numA)) return -1;
+    if (!isNaN(numB)) return 1;
+    return a.localeCompare(b, 'ko');
+  });
+  filters = filters.map(tag => ({
     id: tag,
     label: tag,
     variant: tag.includes('기') ? 'primary' : 'muted'
   }));
 
-  // 1기 > 창립멤버 > 나머지 순서로 정렬
-  filters = filters.sort((a, b) => {
-    if (a.id === '1기') return -1;
-    if (b.id === '1기') return 1;
-    if (a.id === '창립멤버') return -1;
-    if (b.id === '창립멤버') return 1;
-    return a.label.localeCompare(b.label, 'ko');
-  });
-
   wrap.innerHTML = '';
-  // 기본 선택: 첫 번째 필터
+  // 기본 선택: 1기 칩이 있으면 1기, 아니면 첫 번째 필터
   if (!__memberActiveFilter && filters.length > 0) {
-    __memberActiveFilter = filters[0].id;
+    const first1gi = filters.find(f => f.id === '1기');
+    __memberActiveFilter = first1gi ? '1기' : filters[0].id;
   }
   filters.forEach(f => {
     const chipNode = tpl.content.cloneNode(true);
@@ -2097,6 +2102,38 @@ function renderMemberGrid(fadeIn = false) {
     const tags = Array.isArray(m.tags) ? m.tags : [];
     return tags.includes(__memberActiveFilter);
   });
+
+  // 2기 칩이 선택됐고, 2기 멤버가 없으면 안내문구 표시
+  if (__memberActiveFilter === '2기' && data.length === 0) {
+    const section = document.getElementById('member-section');
+    const grid = section?.querySelector('.member-grid');
+    if (grid) {
+      grid.innerHTML = '';
+      const empty = document.createElement('div');
+      empty.className = 'member-empty';
+      // 중앙 정렬: 부모 grid가 position:relative일 때 절대 중앙 배치
+      empty.style.position = 'absolute';
+      empty.style.top = '50%';
+      empty.style.left = '50%';
+      empty.style.transform = 'translate(-50%, -50%)';
+      empty.style.display = 'flex';
+      empty.style.justifyContent = 'center';
+      empty.style.alignItems = 'center';
+      empty.style.width = '100%';
+      empty.style.height = 'auto';
+      empty.style.fontSize = '1.5rem';
+      empty.style.fontWeight = '700';
+      empty.style.textAlign = 'center';
+      empty.style.justifyContent = 'center';
+      empty.style.color = 'rgba(255,255,255,0.85)';
+      empty.textContent = 'SUMMIT 2번째 GOAT를 기대해주세요!';
+      // grid가 relative 아니면 relative로
+      if (getComputedStyle(grid).position === 'static') grid.style.position = 'relative';
+      grid.appendChild(empty);
+      updateMemberScrollPadding();
+    }
+    return;
+  }
 
   // 동장 > 창동장 > 1기 > 창립멤버 > 나머지 순서로 정렬
   data = data.slice().sort((a, b) => {
